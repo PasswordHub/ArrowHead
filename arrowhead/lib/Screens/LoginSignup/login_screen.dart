@@ -1,3 +1,4 @@
+import 'package:arrowhead/Screens/home_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -5,6 +6,8 @@ class LoginScreen extends StatelessWidget {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  LoginScreen({Key? key}) : super(key: key);
 
   Widget login(IconData icon) {
     return Container(
@@ -18,34 +21,27 @@ class LoginScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 24),
-          TextButton(onPressed: () {}, child: Text('Login')),
+          TextButton(onPressed: () {}, child: Text('Sign up')),
         ],
       ),
     );
   }
 
-  Widget userInput(TextEditingController userInput, String hintTitle,
-      TextInputType keyboardType) {
+  Widget userInput(TextEditingController userInput, TextInputType keyboardType,
+      bool hideText) {
     return Container(
-      height: 55,
-      margin: const EdgeInsets.only(bottom: 15),
+      height: 50,
       decoration: BoxDecoration(
           color: Colors.blueGrey.shade200,
           borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
         child: TextField(
+          obscureText: hideText,
           controller: userInput,
           autocorrect: false,
           enableSuggestions: false,
           autofocus: false,
-          decoration: InputDecoration.collapsed(
-            hintText: hintTitle,
-            hintStyle: const TextStyle(
-                fontSize: 18,
-                color: Colors.white70,
-                fontStyle: FontStyle.italic),
-          ),
           keyboardType: keyboardType,
         ),
       ),
@@ -97,13 +93,19 @@ class LoginScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const SizedBox(height: 45),
-                        userInput(emailController, 'Email',
-                            TextInputType.emailAddress),
-                        userInput(passwordController, 'Password',
-                            TextInputType.visiblePassword),
-                        const Text(
-                          'Forgot password ?',
-                          textAlign: TextAlign.end,
+                        const Text('Email'),
+                        userInput(
+                            emailController, TextInputType.emailAddress, false),
+                        const Text('Password'),
+                        userInput(passwordController,
+                            TextInputType.visiblePassword, true),
+                        TextButton(
+                          child: const Text(
+                            'Forgot password ?',
+                          ),
+                          onPressed: () {
+                            //TODO: forgot password logic
+                          },
                         ),
                         Container(
                           height: 55,
@@ -118,8 +120,10 @@ class LoginScreen extends StatelessWidget {
                                     RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
-                            onPressed: () {
-                              //Implement logic for login
+                            onPressed: () async {
+                              //TODO: login logic
+                              Navigator.of(context)
+                                  .pushReplacementNamed(HomePage.routeName);
                             },
                             child: const Text(
                               'Login',
@@ -131,8 +135,11 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 60),
+                        Center(
+                          child: login(Icons.add),
+                        ),
+                        Divider(thickness: 0, color: Colors.white),
                       ],
                     ),
                   ),
