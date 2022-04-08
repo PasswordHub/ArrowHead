@@ -1,4 +1,4 @@
-import 'package:arrowhead/Screens/HomePage/home_page.dart';
+import 'package:arrowhead/screens/HomePage/home_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -29,21 +29,15 @@ class LoginScreen extends StatelessWidget {
 
   Widget userInput(TextEditingController userInput, TextInputType keyboardType,
       bool hideText) {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-          color: Colors.blueGrey.shade200,
-          borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
-        child: TextField(
-          obscureText: hideText,
-          controller: userInput,
-          autocorrect: false,
-          enableSuggestions: false,
-          autofocus: false,
-          keyboardType: keyboardType,
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
+      child: TextField(
+        obscureText: hideText,
+        controller: userInput,
+        autocorrect: false,
+        enableSuggestions: false,
+        autofocus: false,
+        keyboardType: keyboardType,
       ),
     );
   }
