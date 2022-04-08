@@ -1,26 +1,28 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CreateEditPassword extends StatelessWidget {
   static const routeName = '/create_edit_password';
+
+  const CreateEditPassword({Key? key}) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
-    Size deviceSize = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Criar senha'),
-        backgroundColor: Color.fromARGB(255, 48, 48, 48),
+        title: const Text('Criar senha'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Nome do site'),
+          const Text('Nome do site'),
           Container(
             height: 50,
             decoration: BoxDecoration(
                 color: Colors.blueGrey.shade200,
                 borderRadius: BorderRadius.circular(5)),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
+            child: const Padding(
+              padding: EdgeInsets.only(left: 25.0, top: 15, right: 25),
               child: TextField(
                 autocorrect: false,
                 enableSuggestions: false,
@@ -28,15 +30,15 @@ class CreateEditPassword extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 10),
-          Text('URL'),
+          const SizedBox(height: 10),
+          const Text('URL'),
           Container(
             height: 50,
             decoration: BoxDecoration(
                 color: Colors.blueGrey.shade200,
                 borderRadius: BorderRadius.circular(10)),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
+            child: const Padding(
+              padding: EdgeInsets.only(left: 25.0, top: 15, right: 25),
               child: TextField(
                 autocorrect: false,
                 enableSuggestions: false,
@@ -44,15 +46,15 @@ class CreateEditPassword extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 10),
-          Text('Descricao'),
+          const SizedBox(height: 10),
+          const Text('Descricao'),
           Container(
             height: 50,
             decoration: BoxDecoration(
                 color: Colors.blueGrey.shade200,
                 borderRadius: BorderRadius.circular(10)),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
+            child: const Padding(
+              padding: EdgeInsets.only(left: 25.0, top: 15, right: 25),
               child: TextField(
                 autocorrect: false,
                 enableSuggestions: false,
@@ -61,15 +63,15 @@ class CreateEditPassword extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 10),
-          Text('Senha'),
+          const SizedBox(height: 10),
+          const Text('Senha'),
           Container(
             height: 50,
             decoration: BoxDecoration(
                 color: Colors.blueGrey.shade200,
                 borderRadius: BorderRadius.circular(10)),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
+            child: const Padding(
+              padding: EdgeInsets.only(left: 25.0, top: 15, right: 25),
               child: TextField(
                 autocorrect: false,
                 enableSuggestions: false,
@@ -77,7 +79,7 @@ class CreateEditPassword extends StatelessWidget {
               ),
             ),
           ),
-          ElevatedButton(onPressed: () {}, child: Text('Criar senha'))
+          ElevatedButton(onPressed: () {}, child: const Text('Criar senha'))
         ]),
       ),
     );

@@ -1,24 +1,40 @@
-import 'package:arrowhead/Screens/CreateEditPassword/create_edit_password.dart';
-import 'package:arrowhead/Screens/HomePage/home_page.dart';
+import 'package:arrowhead/providers/theme_provider.dart';
+import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
+import 'package:arrowhead/screens/HomePage/home_page.dart';
 import 'package:flutter/material.dart';
-import 'Screens/LoginSignup/login_screen.dart';
+import 'package:provider/provider.dart';
+import 'screens/LoginSignup/login_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ArrowHead());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class ArrowHead extends StatelessWidget {
+  const ArrowHead({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: ThemeProvider())],
+      child: const MyMaterialApp(),
+    );
+  }
+}
+
+class MyMaterialApp extends StatelessWidget {
+  const MyMaterialApp({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ArrowHead',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: theme.themeData,
       home: LoginScreen(),
       routes: {
         LoginScreen.routeName: (ctx) => LoginScreen(),
