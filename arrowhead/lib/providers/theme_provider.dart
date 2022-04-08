@@ -71,13 +71,15 @@ class ThemeProvider with ChangeNotifier {
               fontSize: 16, fontWeight: FontWeight.normal, letterSpacing: 0.5)),
     );
     _darkThemeData = ThemeData(
-      primarySwatch: Colors.grey,
-      canvasColor: Colors.blueGrey,
+      primarySwatch: Colors.blueGrey,
+      appBarTheme: const AppBarTheme(color: Colors.blueGrey),
+      iconTheme: const IconThemeData(color: Colors.black),
+      canvasColor: const MaterialColor(0xFFFFFFFF, color),
       colorScheme: ColorScheme(
           primary: Colors.blue,
           onPrimary: Colors.lightBlue,
           surface: Colors.cyan,
-          onSurface: Colors.cyanAccent,
+          onSurface: Colors.blueAccent,
           secondary: Colors.grey.shade400,
           brightness: Brightness.dark,
           onError: Colors.red,
