@@ -27,7 +27,7 @@ class ThemeProvider with ChangeNotifier {
   ThemeProvider() {
     _lightThemeData = ThemeData(
       primarySwatch: Colors.blueGrey,
-      appBarTheme: const AppBarTheme(color: Colors.blueGrey),
+      appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 48, 48, 48)),
       iconTheme: const IconThemeData(color: Colors.black),
       canvasColor: const MaterialColor(0xFFFFFFFF, color),
       colorScheme: ColorScheme(
@@ -42,13 +42,13 @@ class ThemeProvider with ChangeNotifier {
           onSecondary: Colors.amber,
           background: Colors.deepPurple,
           onBackground: Colors.lightBlue),
-      fontFamily: 'Rajdhani',
+      fontFamily: 'OpenSans',
       textTheme: ThemeData.light().textTheme.copyWith(
           headline1: const TextStyle(
-            fontSize: 18,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+              fontSize: 24,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Rajdhani'), // AppBar
           headline2: const TextStyle(
             fontSize: 24,
             color: Colors.black,
@@ -65,10 +65,13 @@ class ThemeProvider with ChangeNotifier {
           headline5: const TextStyle(
             fontSize: 150,
           ),
-          bodyText1:
-              const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+          bodyText1: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.normal,
+              color: Colors.black,
+              fontFamily: 'OpenSans'),
           bodyText2: const TextStyle(
-              fontSize: 16, fontWeight: FontWeight.normal, letterSpacing: 0.5)),
+              fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
     );
     _darkThemeData = ThemeData(
       primarySwatch: Colors.blueGrey,
