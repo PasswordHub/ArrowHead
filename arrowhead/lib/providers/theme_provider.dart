@@ -68,7 +68,9 @@ class ThemeProvider with ChangeNotifier {
           bodyText1:
               const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
           bodyText2: const TextStyle(
-              fontSize: 16, fontWeight: FontWeight.normal, letterSpacing: 0.5)),
+              fontSize: 16, fontWeight: FontWeight.normal, letterSpacing: 0.5),
+          subtitle2: const TextStyle(
+              color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
     );
     _darkThemeData = ThemeData(
       primarySwatch: Colors.blueGrey,
@@ -113,7 +115,9 @@ class ThemeProvider with ChangeNotifier {
           bodyText1:
               const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
           bodyText2: const TextStyle(
-              fontSize: 16, fontWeight: FontWeight.normal, letterSpacing: 0.5)),
+              fontSize: 16, fontWeight: FontWeight.normal, letterSpacing: 0.5),
+          subtitle2: const TextStyle(
+              color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
     );
     notifyListeners();
   }

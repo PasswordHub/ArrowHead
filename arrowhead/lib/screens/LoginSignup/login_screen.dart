@@ -61,6 +61,7 @@ class LoginScreen extends StatelessWidget {
               style: TextStyle(
                   fontFamily: 'Rajdhani',
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                   fontSize: 50),
             )),
             const Center(
