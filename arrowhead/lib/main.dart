@@ -3,7 +3,7 @@ import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
 import 'package:arrowhead/screens/HomePage/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/LoginSignup/login_screen.dart';
+import 'screens/Login/login_screen.dart';
 
 void main() {
   runApp(const ArrowHead());
