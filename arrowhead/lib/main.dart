@@ -1,6 +1,6 @@
 import 'package:arrowhead/providers/theme_provider.dart';
-import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
-import 'package:arrowhead/screens/HomePage/home_page.dart';
+import '/screens/CreateEditPassword/create_edit_password.dart';
+import '/screens/HomePage/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/Login/login_screen.dart';

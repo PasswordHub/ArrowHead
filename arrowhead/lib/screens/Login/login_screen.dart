@@ -6,6 +6,8 @@ import 'package:email_validator/email_validator.dart';
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
 
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -37,8 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         topRight: Radius.circular(15)),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -214,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
   /// Título e logo do app
   Widget fullLogo() => Column(children: [
         const SizedBox(
-          height: 100,
+          height: 40,
         ),
         Image.asset(
           'assets/images/arrow.png',
