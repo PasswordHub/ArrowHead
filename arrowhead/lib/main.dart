@@ -1,6 +1,7 @@
 import 'package:arrowhead/providers/theme_provider.dart';
 import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
 import 'package:arrowhead/screens/HomePage/home_page.dart';
+import 'package:arrowhead/screens/SignUp/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/Login/login_screen.dart';
@@ -38,6 +39,7 @@ class MyMaterialApp extends StatelessWidget {
       home: LoginScreen(),
       routes: {
         LoginScreen.routeName: (ctx) => LoginScreen(),
+        SingupScreen.routeName: (ctx) => SingupScreen(),
         HomePage.routeName: (ctx) => HomePage(),
         CreateEditPassword.routeName: (ctx) => CreateEditPassword()
       },
