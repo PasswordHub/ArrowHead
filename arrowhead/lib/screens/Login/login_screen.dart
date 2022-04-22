@@ -1,62 +1,20 @@
+import 'package:arrowhead/providers/theme_provider.dart';
 import 'package:arrowhead/screens/HomePage/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
 
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  LoginScreen({Key? key}) : super(key: key);
-
-  Widget signInBtn(IconData icon) {
-    return Container(
-      height: 50,
-      width: 115,
-      decoration: BoxDecoration(
-        border: Border.all(
-            color: const Color.fromARGB(255, 190, 190, 190).withOpacity(0.4),
-            width: 1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 24),
-          TextButton(
-              onPressed: () {},
-              child: const Text(
-                'Criar conta',
-                style:
-                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-              )),
-        ],
-      ),
-    );
-  }
-
-  Widget userInput(TextEditingController userInput, TextInputType keyboardType,
-      bool hideText, String hintTxt) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 2),
-      decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 224, 224, 224),
-          borderRadius: BorderRadius.circular(15)),
-      child: TextField(
-        obscureText: hideText,
-        controller: userInput,
-        autocorrect: false,
-        enableSuggestions: false,
-        autofocus: false,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-            hintText: hintTxt,
-            hintStyle: const TextStyle(
-                color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold),
-            border: InputBorder.none),
-      ),
-    );
-  }
+  String invalidEmailMsg = "";
 
   @override
   Widget build(BuildContext context) {
@@ -64,28 +22,7 @@ class LoginScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(
-              height: 100,
-            ),
-            Image.asset(
-              'assets/images/arrow.png',
-              scale: 2,
-            ),
-            const Center(
-                child: Text(
-              'Arrow Head',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: 'Rajdhani',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 50),
-            )),
-            const Center(
-                child: Text(
-              'Password Manager',
-              style: TextStyle(
-                  color: Colors.black, fontFamily: 'Rajdhani', fontSize: 20),
-            )),
+            fullLogo(),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -114,7 +51,15 @@ class LoginScreen extends StatelessWidget {
                               fontSize: 12),
                         ),
                         userInput(emailController, TextInputType.emailAddress,
-                            false, 'Digite seu email'),
+                            false, 'Digite seu email',
+                            isEmail: true),
+                        Text(
+                          invalidEmailMsg,
+                          style: const TextStyle(
+                              color: Colors.red,
+                              fontFamily: 'Arial',
+                              fontSize: 10),
+                        ),
                         const SizedBox(height: 20),
                         const Text(
                           'Senha mestre',
@@ -182,4 +127,103 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
+
+  /// Botão para a página de cadastro
+  Widget signInBtn(IconData icon) {
+    return Container(
+      height: 50,
+      width: 115,
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: const Color.fromARGB(255, 190, 190, 190).withOpacity(0.4),
+            width: 1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 24),
+          TextButton(
+              onPressed: () {},
+              child: const Text(
+                'Criar conta',
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              )),
+        ],
+      ),
+    );
+  }
+
+  /// Widget para o input de texto
+  Widget userInput(TextEditingController userInput, TextInputType keyboardType,
+      bool hideText, String hintTxt,
+      {bool isEmail = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 2),
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 224, 224, 224),
+          border: Border.all(
+              color: (isEmail && invalidEmailMsg != "")
+                  ? Colors.red
+                  : Colors.transparent),
+          borderRadius: BorderRadius.circular(15)),
+      child: TextField(
+        obscureText: hideText,
+        controller: userInput,
+        autocorrect: false,
+        enableSuggestions: false,
+        autofocus: false,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+            hintText: hintTxt,
+            hintStyle: const TextStyle(
+                color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold),
+            border: InputBorder.none),
+        onChanged: ((value) => {
+              if (isEmail)
+                {
+                  if (!EmailValidator.validate(value))
+                    {
+                      setState(() {
+                        invalidEmailMsg = "Digite um e-mail válido";
+                      })
+                    }
+                  else
+                    {
+                      setState(() {
+                        invalidEmailMsg = "";
+                      })
+                    }
+                }
+            }),
+      ),
+    );
+  }
+
+  /// Título e logo do app
+  Widget fullLogo() => Column(children: [
+        const SizedBox(
+          height: 100,
+        ),
+        Image.asset(
+          'assets/images/arrow.png',
+          scale: 2,
+        ),
+        const Center(
+            child: Text(
+          'Arrow Head',
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Rajdhani',
+              fontWeight: FontWeight.bold,
+              fontSize: 50),
+        )),
+        const Center(
+            child: Text(
+          'Password Manager',
+          style: TextStyle(
+              color: Colors.black, fontFamily: 'Rajdhani', fontSize: 20),
+        )),
+      ]);
 }
