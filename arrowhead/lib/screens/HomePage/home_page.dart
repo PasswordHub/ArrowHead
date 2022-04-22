@@ -1,5 +1,5 @@
 import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
-import 'package:arrowhead/screens/LoginSignup/login_screen.dart';
+import 'package:arrowhead/screens/Login/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
