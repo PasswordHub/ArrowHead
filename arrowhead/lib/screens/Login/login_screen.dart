@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   String invalidEmailMsg = "";
+  bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontFamily: 'Arial',
                               fontSize: 12),
                         ),
-                        userInput(emailController, TextInputType.emailAddress,
-                            false, 'Digite seu email',
-                            isEmail: true),
+                        emailInput(emailController),
                         Text(
                           invalidEmailMsg,
                           style: const TextStyle(
@@ -68,11 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontFamily: 'Arial',
                               fontSize: 12),
                         ),
-                        userInput(
-                            passwordController,
-                            TextInputType.visiblePassword,
-                            true,
-                            "Digite sua senha mestre"),
+                        passwordInput(passwordController),
                         TextButton(
                           style: ButtonStyle(alignment: Alignment.centerRight),
                           child: const Text(
@@ -155,49 +150,64 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  /// Widget para o input de texto
-  Widget userInput(TextEditingController userInput, TextInputType keyboardType,
-      bool hideText, String hintTxt,
-      {bool isEmail = false}) {
+  Widget emailInput(TextEditingController controller) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 2),
       decoration: BoxDecoration(
           color: const Color.fromARGB(255, 224, 224, 224),
           border: Border.all(
-              color: (isEmail && invalidEmailMsg != "")
-                  ? Colors.red
-                  : Colors.transparent),
+              color: (invalidEmailMsg != "") ? Colors.red : Colors.transparent),
           borderRadius: BorderRadius.circular(15)),
       child: TextField(
-        obscureText: hideText,
-        controller: userInput,
+        controller: controller,
         autocorrect: false,
-        enableSuggestions: false,
+        enableSuggestions: true,
         autofocus: false,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-            hintText: hintTxt,
-            hintStyle: const TextStyle(
+        keyboardType: TextInputType.emailAddress,
+        decoration: const InputDecoration(
+            hintText: "Digite seu e-mail",
+            hintStyle: TextStyle(
                 color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold),
             border: InputBorder.none),
         onChanged: ((value) => {
-              if (isEmail)
-                {
-                  if (!EmailValidator.validate(value))
-                    {
-                      setState(() {
-                        invalidEmailMsg = "Digite um e-mail válido";
-                      })
-                    }
-                  else
-                    {
-                      setState(() {
-                        invalidEmailMsg = "";
-                      })
-                    }
-                }
+              setState(() {
+                invalidEmailMsg = EmailValidator.validate(value)
+                    ? ""
+                    : "Digite um e-mail válido";
+              })
             }),
       ),
+    );
+  }
+
+  Widget passwordInput(TextEditingController controller) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 2),
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 224, 224, 224),
+          borderRadius: BorderRadius.circular(15)),
+      child: TextField(
+          obscureText: !showPassword,
+          controller: controller,
+          autocorrect: false,
+          enableSuggestions: false,
+          autofocus: false,
+          keyboardType: TextInputType.visiblePassword,
+          decoration: InputDecoration(
+            hintText: "Digite sua senha mestre",
+            hintStyle: const TextStyle(
+                color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold),
+            border: InputBorder.none,
+            suffixIcon: IconButton(
+                onPressed: (() {
+                  setState(() {
+                    showPassword = !showPassword;
+                  });
+                }),
+                color: Colors.black,
+                icon: Icon(
+                    ((showPassword) ? Icons.remove_red_eye : Icons.password))),
+          )),
     );
   }
 
