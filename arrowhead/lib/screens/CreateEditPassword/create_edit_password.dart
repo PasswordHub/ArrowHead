@@ -14,7 +14,6 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    //final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -40,7 +39,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
               MyTextField(keyboardType: TextInputType.multiline),
               const SizedBox(height: 10),
               Text('Senha', style: Theme.of(context).textTheme.bodyText1),
-              MyTextField(),
+              passwordField(),
               const ListTile(
                 visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                 leading: Icon(
@@ -66,7 +65,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
                   color: Colors.green,
                 ),
                 contentPadding: EdgeInsets.all(0),
-                title: Text('Ao menos 3 caacteres especiais'),
+                title: Text('Ao menos 3 caracteres especiais'),
               ),
               const ListTile(
                 visualDensity: VisualDensity(horizontal: 0, vertical: -4),
@@ -77,10 +76,14 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
                 contentPadding: EdgeInsets.all(0),
                 title: Text('Ao menos 3 números'),
               ),
-              Container(
+              SizedBox(
                 width: double.infinity,
+                height: 40,
                 child: ElevatedButton(
                     onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color.fromARGB(255, 13, 189, 62),
+                    ),
                     child: Text('Criar senha',
                         style: Theme.of(context).textTheme.bodyText2)),
               )
@@ -89,5 +92,23 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
         ),
       ),
     );
+  }
+
+  Widget passwordField() {
+    final deviceSize = MediaQuery.of(context).size;
+    return Container(
+        child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(width: deviceSize.width * 0.75, child: MyTextField()),
+        Container(
+          width: deviceSize.width * 0.10,
+          child: IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {},
+          ),
+        )
+      ],
+    ));
   }
 }
