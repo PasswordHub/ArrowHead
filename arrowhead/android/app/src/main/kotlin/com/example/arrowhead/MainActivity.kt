@@ -1,4 +1,4 @@
-package com.example.arrowhead
+package org.passwordhub.arrowhead
 
 import io.flutter.embedding.android.FlutterActivity
 
