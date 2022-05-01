@@ -38,6 +38,10 @@ dependencies:
 
   # Email validation on forms
   email_validator: ^2.0.1
+  cloud_firestore: ^3.1.13
+  firebase_auth: ^3.3.16
+  firebase_storage: ^10.2.14
+  firebase_core: ^1.15.0
 
 dev_dependencies:
   flutter_test:
