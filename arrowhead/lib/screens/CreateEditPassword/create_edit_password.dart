@@ -15,6 +15,7 @@ class CreateEditPassword extends StatefulWidget {
 class _CreateEditPasswordState extends State<CreateEditPassword> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final Map<String, String> _formData = {};
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +53,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
                   _formData['description'] ?? '', _onSavePasswordDescription,
                   inputType: TextInputType.multiline),
               PasswordTextField(
-                initialValue: _formData['password'] ?? '',
+                passwordController: _passwordController,
                 onSaved: _onSavePassword,
+                passwordChange: _onSavePassword,
               ),
               savePasswordButton
             ]),
@@ -105,7 +107,8 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
     if (value == null) {
       return;
     }
-
-    _formData['password'] = value;
+    setState(() {
+      _passwordController.text = value;
+    });
   }
 }

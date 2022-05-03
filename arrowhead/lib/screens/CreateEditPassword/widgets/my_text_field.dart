@@ -4,11 +4,13 @@ class MyTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final Function(String?)? onChanged;
   final Function(String?) onSaved;
+  final TextEditingController? textController;
   final String initialValue;
   const MyTextField(
       {Key? key,
       this.keyboardType = TextInputType.none,
       this.onChanged,
+      this.textController,
       required this.onSaved,
       this.initialValue = ''})
       : super(key: key);
@@ -18,7 +20,8 @@ class MyTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: TextFormField(
-        initialValue: initialValue,
+        initialValue: textController == null ? initialValue : null,
+        controller: textController,
         autocorrect: false,
         decoration: InputDecoration(
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
