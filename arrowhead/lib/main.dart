@@ -2,11 +2,19 @@ import 'package:arrowhead/providers/theme_provider.dart';
 import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
 import 'package:arrowhead/screens/HomePage/home_page.dart';
 import 'package:arrowhead/screens/SignUp/signup_screen.dart';
+import '/screens/CreateEditPassword/create_edit_password.dart';
+import '/screens/HomePage/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/Login/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ArrowHead());
 }
 

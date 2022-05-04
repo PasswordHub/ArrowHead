@@ -1,87 +1,111 @@
 import 'package:flutter/material.dart';
 
-class CreateEditPassword extends StatelessWidget {
+import 'widgets/my_text_field.dart';
+import 'widgets/password_field/password_field.dart';
+
+class CreateEditPassword extends StatefulWidget {
   static const routeName = '/create_edit_password';
 
   const CreateEditPassword({Key? key}) : super(key: key);
 
   @override
+  State<CreateEditPassword> createState() => _CreateEditPasswordState();
+}
+
+class _CreateEditPasswordState extends State<CreateEditPassword> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final Map<String, String> _formData = {};
+
+  @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
+    final savePasswordButton = SizedBox(
+      width: double.infinity,
+      height: 40,
+      child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            primary: const Color.fromARGB(255, 13, 189, 62),
+          ),
+          child: Text('Criar senha',
+              style: Theme.of(context).textTheme.bodyText2)),
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Criar senha'),
+        title: Text(
+          'Criar senha',
+          style: Theme.of(context).textTheme.headline1,
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Nome do site'),
-          Container(
-            height: 50,
-            decoration: BoxDecoration(
-                color: Colors.blueGrey.shade200,
-                borderRadius: BorderRadius.circular(5)),
-            child: const Padding(
-              padding: EdgeInsets.only(left: 25.0, top: 15, right: 25),
-              child: TextField(
-                autocorrect: false,
-                enableSuggestions: false,
-                autofocus: false,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ...passwordInfoTextField(
+                  'Nome do site', _formData['name'] ?? '', _onSavePasswordName),
+              ...passwordInfoTextField(
+                  'URL', _formData['url'] ?? '', _onSavePasswordUrl),
+              ...passwordInfoTextField('Descrição',
+                  _formData['description'] ?? '', _onSavePasswordDescription,
+                  inputType: TextInputType.multiline),
+              PasswordTextField(
+                initialValue: _formData['password'] ?? '',
+                onSaved: _onSavePassword,
               ),
-            ),
+              savePasswordButton
+            ]),
           ),
-          const SizedBox(height: 10),
-          const Text('URL'),
-          Container(
-            height: 50,
-            decoration: BoxDecoration(
-                color: Colors.blueGrey.shade200,
-                borderRadius: BorderRadius.circular(10)),
-            child: const Padding(
-              padding: EdgeInsets.only(left: 25.0, top: 15, right: 25),
-              child: TextField(
-                autocorrect: false,
-                enableSuggestions: false,
-                autofocus: false,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          const Text('Descricao'),
-          Container(
-            height: 50,
-            decoration: BoxDecoration(
-                color: Colors.blueGrey.shade200,
-                borderRadius: BorderRadius.circular(10)),
-            child: const Padding(
-              padding: EdgeInsets.only(left: 25.0, top: 15, right: 25),
-              child: TextField(
-                autocorrect: false,
-                enableSuggestions: false,
-                autofocus: false,
-                maxLines: 15,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          const Text('Senha'),
-          Container(
-            height: 50,
-            decoration: BoxDecoration(
-                color: Colors.blueGrey.shade200,
-                borderRadius: BorderRadius.circular(10)),
-            child: const Padding(
-              padding: EdgeInsets.only(left: 25.0, top: 15, right: 25),
-              child: TextField(
-                autocorrect: false,
-                enableSuggestions: false,
-                autofocus: false,
-              ),
-            ),
-          ),
-          ElevatedButton(onPressed: () {}, child: const Text('Criar senha'))
-        ]),
+        ),
       ),
     );
+  }
+
+  List<Widget> passwordInfoTextField(
+      String text, String initialValue, Function(String?) onSaved,
+      {TextInputType inputType = TextInputType.none}) {
+    return [
+      Text(text, style: Theme.of(context).textTheme.bodyText1),
+      MyTextField(
+        initialValue: initialValue,
+        keyboardType: inputType,
+        onSaved: onSaved,
+      ),
+      const SizedBox(height: 10)
+    ];
+  }
+
+  _onSavePasswordName(String? value) {
+    if (value == null) {
+      return;
+    }
+
+    _formData['name'] = value;
+  }
+
+  _onSavePasswordUrl(String? value) {
+    if (value == null) {
+      return;
+    }
+
+    _formData['name'] = value;
+  }
+
+  _onSavePasswordDescription(String? value) {
+    if (value == null) {
+      return;
+    }
+
+    _formData['name'] = value;
+  }
+
+  _onSavePassword(String? value) {
+    if (value == null) {
+      return;
+    }
+
+    _formData['password'] = value;
   }
 }
