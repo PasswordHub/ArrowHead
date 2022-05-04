@@ -7,6 +7,8 @@ import 'package:email_validator/email_validator.dart';
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
 
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -58,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(
                               color: Colors.red,
                               fontFamily: 'Arial',
-                              fontSize: 10),
+                              fontSize: 11),
                         ),
                         const SizedBox(height: 20),
                         const Text(

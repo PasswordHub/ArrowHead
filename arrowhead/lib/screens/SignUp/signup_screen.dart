@@ -14,6 +14,7 @@ class _SingupScreenState extends State<SingupScreen> {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   String invalidEmailMsg = "";
   bool showPassword = false;
@@ -36,7 +37,7 @@ class _SingupScreenState extends State<SingupScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               const Text(
                 "Criar conta",
                 textAlign: TextAlign.left,
@@ -45,19 +46,25 @@ class _SingupScreenState extends State<SingupScreen> {
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               userInput(nameController, "Nome completo",
                   "Digite seu nome completo", TextInputType.name),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               emailInput(emailController, "E-mail"),
-              SizedBox(height: 20),
-              userInput(emailController, "Telefone",
+              const SizedBox(height: 5),
+              (invalidEmailMsg != "")
+                  ? Text(invalidEmailMsg,
+                      style: const TextStyle(
+                          color: Colors.red, fontFamily: 'Arial', fontSize: 11))
+                  : const SizedBox(),
+              const SizedBox(height: 20),
+              userInput(phoneController, "Telefone",
                   "Digite seu número de telefone", TextInputType.number),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               passwordInput(passwordController, "Senha mestre"),
-              SizedBox(height: 20),
-              passwordInput(passwordController, "Confirmar senha"),
-              SizedBox(height: 40),
+              const SizedBox(height: 20),
+              passwordInput(confirmPasswordController, "Confirmar senha"),
+              const SizedBox(height: 40),
               signUpBtn()
             ]),
       )),
@@ -77,7 +84,7 @@ class _SingupScreenState extends State<SingupScreen> {
                 borderRadius: BorderRadius.circular(10.0),
               ))),
           onPressed: () async {
-            //TODO: login logic
+            // TODO: login logic
             // Navigator.of(context).pushReplacementNamed(HomePage.routeName);
           },
           child: const Text(
@@ -133,7 +140,7 @@ class _SingupScreenState extends State<SingupScreen> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.black, fontFamily: 'Arial', fontSize: 12),
           ),
           SizedBox(height: 5),
@@ -161,9 +168,10 @@ class _SingupScreenState extends State<SingupScreen> {
                   border: InputBorder.none),
               onChanged: ((value) => {
                     setState(() {
-                      invalidEmailMsg = EmailValidator.validate(value)
-                          ? ""
-                          : "Digite um e-mail válido";
+                      invalidEmailMsg =
+                          EmailValidator.validate(value) || value.isEmpty
+                              ? ""
+                              : "Digite um e-mail válido";
                     })
                   }),
             ),
@@ -178,7 +186,7 @@ class _SingupScreenState extends State<SingupScreen> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.black, fontFamily: 'Arial', fontSize: 12),
           ),
           SizedBox(height: 5),
@@ -188,30 +196,31 @@ class _SingupScreenState extends State<SingupScreen> {
                 color: const Color.fromARGB(255, 224, 224, 224),
                 borderRadius: BorderRadius.circular(15)),
             child: TextField(
-                obscureText: !showPassword,
-                controller: controller,
-                autocorrect: false,
-                enableSuggestions: false,
-                autofocus: false,
-                keyboardType: TextInputType.visiblePassword,
-                decoration: InputDecoration(
-                  hintText: "Digite sua senha mestre",
-                  hintStyle: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
-                  border: InputBorder.none,
-                  suffixIcon: IconButton(
-                      onPressed: (() {
-                        setState(() {
-                          showPassword = !showPassword;
-                        });
-                      }),
-                      color: Colors.black,
-                      icon: Icon(((showPassword)
-                          ? Icons.remove_red_eye
-                          : Icons.password))),
-                )),
+              obscureText: !showPassword,
+              controller: controller,
+              autocorrect: false,
+              enableSuggestions: false,
+              autofocus: false,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                hintText: "Digite sua senha mestre",
+                hintStyle: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold),
+                border: InputBorder.none,
+                suffixIcon: IconButton(
+                    onPressed: (() {
+                      setState(() {
+                        showPassword = !showPassword;
+                      });
+                    }),
+                    color: Colors.black,
+                    icon: Icon(((showPassword)
+                        ? Icons.remove_red_eye
+                        : Icons.password))),
+              ),
+            ),
           )
         ]);
   }
