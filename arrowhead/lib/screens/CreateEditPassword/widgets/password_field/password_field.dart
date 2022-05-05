@@ -6,10 +6,14 @@ import '../check_list_tile.dart';
 import '../my_text_field.dart';
 
 class PasswordTextField extends StatefulWidget {
-  final String initialValue;
   final Function(String?) onSaved;
+  final Function(String?) passwordChange;
+  final TextEditingController passwordController;
   const PasswordTextField(
-      {Key? key, this.initialValue = '', required this.onSaved})
+      {Key? key,
+      required this.passwordController,
+      required this.onSaved,
+      required this.passwordChange})
       : super(key: key);
 
   @override
@@ -30,9 +34,10 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           children: [
             Flexible(
                 child: MyTextField(
-              initialValue: widget.initialValue,
+              textController: widget.passwordController,
               onSaved: widget.onSaved,
               onChanged: _onPasswordChange,
+              validator: _validatePassword,
             )),
             SizedBox(
               width: deviceSize.width * 0.10,
@@ -60,7 +65,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   }
 
   _generateStrongPassword() {
-    int passwordLength = 12;
+    int passwordLength = 30;
 
     String _lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
     String _upperCaseLetters = _lowerCaseLetters.toUpperCase();
@@ -79,8 +84,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       _result += _allowedChars[randomInt];
       i++;
     }
+    widget.passwordChange(_result);
 
-    setState(() {});
+    _onPasswordChange(_result);
   }
 
   _onPasswordChange(String? value) {
@@ -88,10 +94,24 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       return;
     }
     setState(() {
-      _passwordChecks['12characters'] = value.length > 12;
+      _passwordChecks['12characters'] = value.length >= 12;
       _passwordChecks['1upperCaseCharacter'] = value.contains(RegExp(r'[A-Z]'));
-      _passwordChecks['3specialCharacters'] = value.contains(RegExp(r'[!@#$]'));
-      _passwordChecks['3numbers'] = value.contains(RegExp(r'[0-9]'));
+
+      _passwordChecks['3specialCharacters'] =
+          value.split(RegExp(r'[!@#$*%&]')).length > 3;
+      _passwordChecks['3numbers'] = value.split(RegExp(r'[0-9]')).length > 3;
     });
+  }
+
+  String _validatePassword(String? password) {
+    if (password == null || password.isEmpty) {
+      return 'O campo senha não pode estar vazio';
+    }
+
+    if (_passwordChecks.values.contains(false)) {
+      return 'A sua senha não está segura';
+    }
+
+    return '';
   }
 }
