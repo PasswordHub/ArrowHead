@@ -21,8 +21,17 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
   final String URL_KEY = 'url';
   final String DESCRIPTION_KEY = 'description';
 
-  void _savePassword() {
+  void _savePassword(BuildContext context) {
     if (!(_formKey.currentState?.validate() ?? false)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Erro ao salvar a senha!',
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
       return;
     }
 
@@ -44,7 +53,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
       width: double.infinity,
       height: 40,
       child: ElevatedButton(
-          onPressed: _savePassword,
+          onPressed: () => _savePassword(context),
           style: ElevatedButton.styleFrom(
             primary: const Color.fromARGB(255, 13, 189, 62),
           ),
