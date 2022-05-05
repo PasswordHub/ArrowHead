@@ -37,6 +37,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               textController: widget.passwordController,
               onSaved: widget.onSaved,
               onChanged: _onPasswordChange,
+              validator: _validatePassword,
             )),
             SizedBox(
               width: deviceSize.width * 0.10,
@@ -100,5 +101,17 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           value.split(RegExp(r'[!@#$*%&]')).length > 3;
       _passwordChecks['3numbers'] = value.split(RegExp(r'[0-9]')).length > 3;
     });
+  }
+
+  String _validatePassword(String? password) {
+    if (password == null || password.isEmpty) {
+      return 'O campo senha não pode estar vazio';
+    }
+
+    if (_passwordChecks.values.contains(false)) {
+      return 'A sua senha não está segura';
+    }
+
+    return '';
   }
 }

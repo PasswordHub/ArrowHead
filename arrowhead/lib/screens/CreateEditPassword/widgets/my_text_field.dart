@@ -4,6 +4,7 @@ class MyTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final Function(String?)? onChanged;
   final Function(String?) onSaved;
+  final String Function(String?)? validator;
   final TextEditingController? textController;
   final String initialValue;
   const MyTextField(
@@ -12,6 +13,7 @@ class MyTextField extends StatelessWidget {
       this.onChanged,
       this.textController,
       required this.onSaved,
+      required this.validator,
       this.initialValue = ''})
       : super(key: key);
 
@@ -33,6 +35,7 @@ class MyTextField extends StatelessWidget {
         maxLines: keyboardType == TextInputType.multiline ? 4 : 1,
         onChanged: onChanged,
         onSaved: onSaved,
+        validator: validator,
       ),
     );
   }
