@@ -45,7 +45,7 @@ class _SingupScreenState extends State<SingupScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               const Text(
                 "Criar conta",
                 textAlign: TextAlign.left,
@@ -54,7 +54,7 @@ class _SingupScreenState extends State<SingupScreen> {
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               userInput(nameController, "Nome completo",
                   "Digite seu nome completo", TextInputType.name),
               const SizedBox(height: 20),
@@ -70,8 +70,26 @@ class _SingupScreenState extends State<SingupScreen> {
                   "Digite seu número de telefone", TextInputType.number),
               const SizedBox(height: 20),
               passwordInput(passwordController, "Senha mestre"),
+              const SizedBox(height: 10),
+              Padding(
+                  padding: EdgeInsets.all(5),
+                  child: RichText(
+                      text: const TextSpan(
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Color.fromARGB(255, 19, 19, 19),
+                          ),
+                          children: [
+                        TextSpan(
+                            text:
+                                "A sua senha mestre será responsável pelo seu login e pela criptografia dos dados. É importante não esquecer ou perder sua senha, pois "),
+                        TextSpan(
+                            text: "não é possível recuperá-la.",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ]))),
               const SizedBox(height: 20),
-              passwordInput(confirmPasswordController, "Confirmar senha"),
+              passwordInput(
+                  confirmPasswordController, "Confirmar senha mestre"),
               const SizedBox(height: 40),
               signUpBtn()
             ]),
