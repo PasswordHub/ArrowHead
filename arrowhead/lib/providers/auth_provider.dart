@@ -15,14 +15,15 @@ class Auth with ChangeNotifier {
 
   String get id => _currUser?.id ?? INVALID_ID;
   bool get isLoggedIn => _loggedIn;
+  Login? get currUser => _currUser;
 
   Future<void> signIn(Map<String, String>? userData) async {
     if (userData == null || userData.isEmpty) {
       return;
     }
 
-    final String email = userData['email']!;
-    final String password = userData['password']!;
+    final String email = userData[Login.EMAIL_KEY]!;
+    final String password = userData[Login.PASSWORD_KEY]!;
 
     UserCredential authResult = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
@@ -44,6 +45,29 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> signUp(Map<String, String>? userData) async {
+    if (userData == null || userData.isEmpty) {
+      return;
+    }
+
+    final String email = userData[Login.EMAIL_KEY]!;
+    final String password = userData[Login.PASSWORD_KEY]!;
+
+    UserCredential authResult = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
+
+    String userId = authResult.user?.uid ?? INVALID_ID;
+    if (userId == INVALID_ID) {
+      return;
+    }
+
+    userData[Login.ID_KEY] = userId;
+    _currUser = Login.fromJson(userData);
+
+    await _firestore.collection(collectionName).doc(userId).set(userData);
+    notifyListeners();
+  }
+
   Future<DocumentSnapshot> _fetchUserData(String userId) async =>
       await _firestore.collection(collectionName).doc(userId).get();
 
@@ -56,8 +80,9 @@ class Auth with ChangeNotifier {
       if (loginData.data() == null) return false;
 
       _currUser = Login.fromJson(loginData.data() as Map<String, dynamic>);
+      _loggedIn = true;
     }
-
+    notifyListeners();
     return true;
   }
 

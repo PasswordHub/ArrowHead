@@ -4,7 +4,7 @@ class MyTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final Function(String?)? onChanged;
   final Function(String?) onSaved;
-  final String Function(String?)? validator;
+  final String? Function(String?)? validator;
   final TextEditingController? textController;
   final String initialValue;
   const MyTextField(

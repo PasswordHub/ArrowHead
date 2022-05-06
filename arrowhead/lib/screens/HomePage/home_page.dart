@@ -1,8 +1,11 @@
-import 'package:arrowhead/Data/password_data.dart';
 import 'package:arrowhead/models/password.dart';
+import 'package:arrowhead/providers/password_provider.dart';
 import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
-import 'package:arrowhead/screens/Login/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/login.dart';
+import '../../providers/auth_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,15 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Password> passwords;
   String query = '';
-
-  @override
-  void initState() {
-    super.initState();
-
-    passwords = allPasswords;
-  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,9 +25,9 @@ class _HomePageState extends State<HomePage> {
           'Senhas salvas',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color.fromARGB(255, 48, 48, 48),
-        iconTheme: IconThemeData(color: Colors.white),
-        actions: <Widget>[
+        backgroundColor: const Color.fromARGB(255, 48, 48, 48),
+        iconTheme: const IconThemeData(color: Colors.white),
+        /*actions: <Widget>[
           IconButton(
             icon: new Icon(Icons.search),
             tooltip: 'Search',
@@ -40,27 +35,22 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               showSearch(
                 context: context,
-                delegate: MySearchDelegate(passwords),
+                delegate: MySearchDelegate(),
               );
             },
           ),
-        ],
+        ],*/
       ),
       drawer: const HomePageDrawer(),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-              itemCount: passwords.length,
-              itemBuilder: (context, index) {
-                final password = passwords[index];
-
-                return buildPassword(password);
-              },
-            ),
-          )
-        ],
-      ),
+      body: FutureBuilder(
+          future:
+              Provider.of<PasswordProvider>(context, listen: false).fetchData(),
+          builder: (context, snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : buildScaffold(context)),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 48, 48, 48),
         child: const Icon(
@@ -75,15 +65,24 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+Widget buildScaffold(BuildContext context) {
+  return Consumer<PasswordProvider>(
+      builder: (context, passwords, _) => passwords.size == 0
+          ? const Center(
+              child: Text('Nenhuma senha foi inserida'),
+            )
+          : (ListView.builder(
+              itemCount: passwords.size,
+              itemBuilder: (context, index) {
+                return buildPassword(passwords.items[index]);
+              },
+            )));
+}
+
 Widget buildPassword(Password password) => ListTile(
-      leading: Image.network(
-        password.url,
-        width: 35,
-        height: 35,
-      ),
       title: Text(password.name),
       subtitle: Text(password.description),
-      trailing: Icon(Icons.arrow_forward_ios),
+      trailing: const Icon(Icons.arrow_forward_ios),
     );
 
 class MySearchDelegate extends SearchDelegate {
@@ -95,29 +94,34 @@ class MySearchDelegate extends SearchDelegate {
   ThemeData appBarTheme(BuildContext context) {
     assert(context != null);
     final ThemeData theme = Theme.of(context).copyWith(
-      textTheme: const TextTheme(
-        headline6: TextStyle(
-          color: Colors.white,
-          fontSize: 18.0,
+        textTheme: const TextTheme(
+          headline6: TextStyle(
+            color: Colors.white,
+            fontSize: 18.0,
+          ),
         ),
-      ),
-      inputDecorationTheme: const InputDecorationTheme(
-        border: InputBorder.none,
-      )
-    );
+        inputDecorationTheme: const InputDecorationTheme(
+          border: InputBorder.none,
+        ));
     return theme;
   }
 
   @override
   Widget? buildLeading(BuildContext context) => IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white,),
+        icon: const Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
         onPressed: () => close(context, null),
       );
 
   @override
   List<Widget>? buildActions(BuildContext context) => [
         IconButton(
-          icon: const Icon(Icons.clear, color: Colors.white,),
+          icon: const Icon(
+            Icons.clear,
+            color: Colors.white,
+          ),
           onPressed: () {
             if (query.isEmpty) {
               close(context, null);
@@ -146,7 +150,10 @@ class MySearchDelegate extends SearchDelegate {
             width: 35,
             height: 35,
           ),
-          title: Text(password.name, style: const TextStyle(color: Colors.black),),
+          title: Text(
+            password.name,
+            style: const TextStyle(color: Colors.black),
+          ),
           onTap: () {
             query = password.name;
             showResults(context);
@@ -172,21 +179,22 @@ class HomePageDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Login? currUser = Provider.of<Auth>(context, listen: false).currUser;
     return Drawer(
         child: ListView(
       padding: EdgeInsets.zero,
       children: [
-        const UserAccountsDrawerHeader(
+        UserAccountsDrawerHeader(
           accountName: Text(
-            "Bill Gates",
+            currUser?.name ?? '',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           accountEmail: Text(
-            "billgates123@email.com",
+            currUser?.email ?? '',
             style: TextStyle(),
           ),
           decoration: BoxDecoration(color: Color.fromARGB(255, 48, 48, 48)),
-          currentAccountPicture: CircleAvatar(
+          currentAccountPicture: const CircleAvatar(
             radius: 30.0,
             backgroundImage: NetworkImage(
                 "https://scontent.fplu3-1.fna.fbcdn.net/v/t1.18169-9/23473074_10155031875776961_8482140412038626648_n.jpg?stp=cp0_dst-jpg_e15_p320x320_q65&_nc_cat=107&ccb=1-5&_nc_sid=7aed08&_nc_ohc=5T1yXKlmgmAAX8KDiPU&_nc_ht=scontent.fplu3-1.fna&oh=00_AT_Me8zbq2IdVW42F5vt5Eam_gXGOXknl5pLc0RvZhCG1Q&oe=62865BDE"),
@@ -199,7 +207,7 @@ class HomePageDrawer extends StatelessWidget {
         ),
         ListTile(
           leading: Icon(Icons.storage_rounded),
-          title: Text('Gurpos de Senhas',
+          title: Text('Grupos de Senhas',
               style: Theme.of(context).textTheme.subtitle2),
         ),
         ListTile(
@@ -207,9 +215,7 @@ class HomePageDrawer extends StatelessWidget {
           title: Text('Settings', style: Theme.of(context).textTheme.subtitle2),
         ),
         ListTile(
-          onTap: () {
-            Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-          },
+          onTap: () async => Provider.of<Auth>(context, listen: false).logout(),
           leading: const Icon(
             Icons.logout,
             color: Colors.red,

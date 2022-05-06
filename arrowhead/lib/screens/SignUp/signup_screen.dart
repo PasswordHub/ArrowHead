@@ -1,9 +1,16 @@
+import 'package:arrowhead/models/login.dart';
+import 'package:arrowhead/screens/HomePage/home_page.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/auth_provider.dart';
 
 class SingupScreen extends StatefulWidget {
   static const routeName = '/signup-screen';
+
+  const SingupScreen({Key? key}) : super(key: key);
 
   @override
   _SingupScreenState createState() => _SingupScreenState();
@@ -18,6 +25,7 @@ class _SingupScreenState extends State<SingupScreen> {
 
   String invalidEmailMsg = "";
   bool showPassword = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +92,45 @@ class _SingupScreenState extends State<SingupScreen> {
                 borderRadius: BorderRadius.circular(10.0),
               ))),
           onPressed: () async {
-            // TODO: login logic
-            // Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+            try {
+              setState(() {
+                isLoading = true;
+              });
+
+              await Provider.of<Auth>(context, listen: false).signUp({
+                Login.EMAIL_KEY: emailController.text,
+                Login.PASSWORD_KEY: passwordController.text,
+                Login.NAME_KEY: nameController.text
+              });
+            } on PlatformException catch (error) {
+              var message = 'Um erro ocorreu, por favor olhe usas credenciais';
+              if (error.message == null) {
+                return;
+              }
+              message = error.message ?? '';
+              showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                        title: const Text('Um erro ocorreu'),
+                        content: Text(message),
+                      ));
+              setState(() {
+                isLoading = false;
+              });
+            } catch (error) {
+              showDialog(
+                  context: context,
+                  builder: (ctx) => FittedBox(
+                        child: AlertDialog(
+                          title: const Text('Um erro ocorreu'),
+                          content: Text(error.toString()),
+                        ),
+                      ));
+              setState(() {
+                isLoading = false;
+              });
+            }
+            Navigator.of(context).pushReplacementNamed(HomePage.routeName);
           },
           child: const Text(
             'Finalizar',

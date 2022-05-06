@@ -103,7 +103,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     });
   }
 
-  String _validatePassword(String? password) {
+  String? _validatePassword(String? password) {
     if (password == null || password.isEmpty) {
       return 'O campo senha não pode estar vazio';
     }
@@ -112,6 +112,6 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       return 'A sua senha não está segura';
     }
 
-    return '';
+    return null;
   }
 }
