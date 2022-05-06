@@ -1,4 +1,6 @@
+import 'package:arrowhead/providers/password_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/password.dart';
 import 'widgets/my_text_field.dart';
@@ -34,14 +36,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
 
     _formKey.currentState?.save();
 
-    /*
-    print(_formData[Password.NAME_KEY]);
-    print(_formData[Password.URL_KEY]);
-    print(_formData[Password.DESCRIPTION_KEY]);
-    print(_passwordController.text);
-
-    //TODO: insert element in provider
-    */
+    _formData[Password.PASSWORD_KEY] = _passwordController.text;
+    Provider.of<PasswordProvider>(context, listen: false).add(_formData);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -76,9 +73,11 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
                   'Nome do site',
                   _formData[Password.NAME_KEY] ?? '',
                   _onSavePasswordName,
-                  _validatePasswordName),
+                  _validatePasswordName,
+                  inputType: TextInputType.name),
               ...passwordInfoTextField('URL', _formData[Password.URL_KEY] ?? '',
-                  _onSavePasswordUrl, _validatePasswordUrl),
+                  _onSavePasswordUrl, _validatePasswordUrl,
+                  inputType: TextInputType.url),
               ...passwordInfoTextField(
                   'Descrição (opcional)',
                   _formData[Password.DESCRIPTION_KEY] ?? '',
@@ -99,7 +98,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
   }
 
   List<Widget> passwordInfoTextField(String text, String initialValue,
-      Function(String?) onSaved, String Function(String?)? validator,
+      Function(String?) onSaved, String? Function(String?)? validator,
       {TextInputType inputType = TextInputType.none}) {
     return [
       Text(text, style: Theme.of(context).textTheme.bodyText1),
@@ -146,7 +145,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
     });
   }
 
-  String _validatePasswordUrl(String? url) {
+  String? _validatePasswordUrl(String? url) {
     if (url == null || url.isEmpty) {
       return 'O campo URL não pode estar vazio';
     }
@@ -155,13 +154,13 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
       return 'Por favor, insira uma URL válida';
     }
 
-    return '';
+    return null;
   }
 
-  String _validatePasswordName(String? name) {
+  String? _validatePasswordName(String? name) {
     if (name == null || name.isEmpty) {
       return 'O campo nome não pode estar vazio';
     }
-    return '';
+    return null;
   }
 }

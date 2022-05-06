@@ -45,6 +45,25 @@ class PasswordProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> add(Map<String, dynamic>? passwordData) async {
+    if (passwordData == null || passwordData.isEmpty) {
+      return;
+    }
+
+    passwordData[Password.ID_KEY] = _userId + _items.length.toString();
+    passwordData[Password.LOGIN_KEY] = '';
+
+    await _firestore
+        .collection(_mainCollection)
+        .doc(_userId)
+        .collection(_subCollection)
+        .doc(passwordData[Password.ID_KEY])
+        .set(passwordData);
+
+    _items.add(Password.fromJson(passwordData));
+    notifyListeners();
+  }
+
   Future<void> remove(String id) async {
     int index = _items.indexWhere((element) => element.id == id);
 

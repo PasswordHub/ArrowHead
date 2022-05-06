@@ -1,9 +1,12 @@
-import 'package:arrowhead/providers/theme_provider.dart';
 import 'package:arrowhead/screens/ForgotPassword/forgot_password_screen.dart';
 import 'package:arrowhead/screens/HomePage/home_page.dart';
 import 'package:arrowhead/screens/SignUp/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/login.dart';
+import '../../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
@@ -20,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String invalidEmailMsg = "";
   bool showPassword = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         passwordInput(passwordController),
                         TextButton(
-                          style: ButtonStyle(alignment: Alignment.centerRight),
+                          style: const ButtonStyle(
+                              alignment: Alignment.centerRight),
                           child: const Text(
                             'Esqueceu a senha?',
                             textAlign: TextAlign.right,
@@ -83,12 +88,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .pushNamed(ForgotPasswordScreen.routeName);
                           },
                         ),
-                        loginBtn(),
+                        loginBtn(context),
                         const SizedBox(height: 60),
                         Center(
                           child: signInBtn(Icons.add),
                         ),
-                        Divider(thickness: 0, color: Colors.white),
+                        const Divider(thickness: 0, color: Colors.white),
                       ],
                     ),
                   ),
@@ -101,30 +106,73 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget loginBtn() => Container(
+  Widget loginBtn(BuildContext context) => Container(
         height: 50,
         padding: const EdgeInsets.only(top: 5),
-        child: ElevatedButton(
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(
-                  const Color.fromARGB(255, 13, 189, 62)),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ))),
-          onPressed: () async {
-            //TODO: login logic
-            Navigator.of(context).pushReplacementNamed(HomePage.routeName);
-          },
-          child: const Text(
-            'Entrar',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-          ),
-        ),
+        child: isLoading
+            ? const CircularProgressIndicator()
+            : ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        const Color.fromARGB(255, 13, 189, 62)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ))),
+                onPressed: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  if (emailController.text.isEmpty ||
+                      passwordController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Por favor, preencha os campos de email e senha',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                    );
+
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
+
+                  try {
+                    Provider.of<Auth>(context, listen: false).signIn({
+                      Login.EMAIL_KEY: emailController.text,
+                      Login.PASSWORD_KEY: passwordController.text
+                    });
+                  } catch (error) {
+                    showDialog(
+                        context: context,
+                        builder: (ctx) => const FittedBox(
+                              child: AlertDialog(
+                                title: Text('Um erro ocorreu'),
+                                content:
+                                    Text('A senha inserida está incorreta'),
+                              ),
+                            ));
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
+
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
+                child: const Text(
+                  'Entrar',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
       );
 
   /// Botão para a página de cadastro
