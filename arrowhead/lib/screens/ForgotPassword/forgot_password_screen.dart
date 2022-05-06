@@ -78,9 +78,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 text: "apagar sua conta: ",
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                           ])),
-                      SizedBox(height: 30),
+                      SizedBox(height: 40),
                       emailInput(emailController, "Confirme seu e-mail"),
-                      SizedBox(height: 15),
+                      SizedBox(height: 10),
                       deleteBtn()
                     ]))));
   }

@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontFamily: 'Arial',
                               fontSize: 11),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         const Text(
                           'Senha mestre',
                           style: TextStyle(
