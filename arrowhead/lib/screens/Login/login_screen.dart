@@ -1,4 +1,5 @@
 import 'package:arrowhead/providers/theme_provider.dart';
+import 'package:arrowhead/screens/ForgotPassword/forgot_password_screen.dart';
 import 'package:arrowhead/screens/HomePage/home_page.dart';
 import 'package:arrowhead/screens/SignUp/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(color: Colors.black, fontSize: 12),
                           ),
                           onPressed: () {
-                            //TODO: forgot password logic
+                            Navigator.of(context)
+                                .pushNamed(ForgotPasswordScreen.routeName);
                           },
                         ),
                         loginBtn(),
