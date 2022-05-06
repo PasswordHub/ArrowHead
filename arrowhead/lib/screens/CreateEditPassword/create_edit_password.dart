@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../models/password.dart';
 import 'widgets/my_text_field.dart';
 import 'widgets/password_field/password_field.dart';
 
@@ -16,10 +17,6 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final Map<String, String> _formData = {};
   final TextEditingController _passwordController = TextEditingController();
-
-  final String NAME_KEY = 'name';
-  final String URL_KEY = 'url';
-  final String DESCRIPTION_KEY = 'description';
 
   void _savePassword(BuildContext context) {
     if (!(_formKey.currentState?.validate() ?? false)) {
@@ -38,9 +35,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
     _formKey.currentState?.save();
 
     /*
-    print(_formData[NAME_KEY]);
-    print(_formData[URL_KEY]);
-    print(_formData[DESCRIPTION_KEY]);
+    print(_formData[Password.NAME_KEY]);
+    print(_formData[Password.URL_KEY]);
+    print(_formData[Password.DESCRIPTION_KEY]);
     print(_passwordController.text);
 
     //TODO: insert element in provider
@@ -77,14 +74,14 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ...passwordInfoTextField(
                   'Nome do site',
-                  _formData[NAME_KEY] ?? '',
+                  _formData[Password.NAME_KEY] ?? '',
                   _onSavePasswordName,
                   _validatePasswordName),
-              ...passwordInfoTextField('URL', _formData[URL_KEY] ?? '',
+              ...passwordInfoTextField('URL', _formData[Password.URL_KEY] ?? '',
                   _onSavePasswordUrl, _validatePasswordUrl),
               ...passwordInfoTextField(
                   'Descrição (opcional)',
-                  _formData[DESCRIPTION_KEY] ?? '',
+                  _formData[Password.DESCRIPTION_KEY] ?? '',
                   _onSavePasswordDescription,
                   null,
                   inputType: TextInputType.multiline),
@@ -121,7 +118,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
       return;
     }
 
-    _formData[NAME_KEY] = value;
+    _formData[Password.NAME_KEY] = value;
   }
 
   _onSavePasswordUrl(String? value) {
@@ -129,7 +126,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
       return;
     }
 
-    _formData[URL_KEY] = value;
+    _formData[Password.URL_KEY] = value;
   }
 
   _onSavePasswordDescription(String? value) {
@@ -137,7 +134,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
       return;
     }
 
-    _formData[DESCRIPTION_KEY] = value;
+    _formData[Password.DESCRIPTION_KEY] = value;
   }
 
   _onSavePassword(String? value) {
