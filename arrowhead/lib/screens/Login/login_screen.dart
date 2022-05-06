@@ -1,5 +1,7 @@
 import 'package:arrowhead/providers/theme_provider.dart';
+import 'package:arrowhead/screens/ForgotPassword/forgot_password_screen.dart';
 import 'package:arrowhead/screens/HomePage/home_page.dart';
+import 'package:arrowhead/screens/SignUp/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
@@ -58,9 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(
                               color: Colors.red,
                               fontFamily: 'Arial',
-                              fontSize: 10),
+                              fontSize: 11),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         const Text(
                           'Senha mestre',
                           style: TextStyle(
@@ -77,36 +79,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(color: Colors.black, fontSize: 12),
                           ),
                           onPressed: () {
-                            //TODO: forgot password logic
+                            Navigator.of(context)
+                                .pushNamed(ForgotPasswordScreen.routeName);
                           },
                         ),
-                        Container(
-                          height: 50,
-                          padding: const EdgeInsets.only(top: 5),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    const Color.fromARGB(255, 13, 189, 62)),
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ))),
-                            onPressed: () async {
-                              //TODO: login logic
-                              Navigator.of(context)
-                                  .pushReplacementNamed(HomePage.routeName);
-                            },
-                            child: const Text(
-                              'Entrar',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
+                        loginBtn(),
                         const SizedBox(height: 60),
                         Center(
                           child: signInBtn(Icons.add),
@@ -124,6 +101,32 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget loginBtn() => Container(
+        height: 50,
+        padding: const EdgeInsets.only(top: 5),
+        child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(
+                  const Color.fromARGB(255, 13, 189, 62)),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ))),
+          onPressed: () async {
+            //TODO: login logic
+            Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+          },
+          child: const Text(
+            'Entrar',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
+
   /// Botão para a página de cadastro
   Widget signInBtn(IconData icon) {
     return Container(
@@ -140,7 +143,9 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           Icon(icon, size: 24),
           TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(SingupScreen.routeName);
+              },
               child: const Text(
                 'Criar conta',
                 style:
