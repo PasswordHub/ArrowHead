@@ -1,11 +1,27 @@
+import 'package:arrowhead/Data/password_data.dart';
+import 'package:arrowhead/models/password.dart';
 import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
 import 'package:arrowhead/screens/Login/login_screen.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
   static const routeName = '/home';
 
-  const HomePage({Key? key}) : super(key: key);
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late List<Password> passwords;
+  String query = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    passwords = allPasswords;
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,31 +37,33 @@ class HomePage extends StatelessWidget {
             icon: new Icon(Icons.search),
             tooltip: 'Search',
             color: Colors.white,
-            onPressed: () {},
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: MySearchDelegate(passwords),
+              );
+            },
           ),
         ],
       ),
       drawer: const HomePageDrawer(),
       body: Column(
-        children: [
-          PasswordItem(
-            text: 'Instagram',
-            imageUrl:
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Instagram-Icon.png/600px-Instagram-Icon.png',
-          ),
-          PasswordItem(
-              text: 'Facebook',
-              imageUrl:
-                  'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Facebook_icon_2013.svg/1200px-Facebook_icon_2013.svg.png'),
-          PasswordItem(
-              text: 'Twitter',
-              imageUrl:
-                  'https://logodownload.org/wp-content/uploads/2014/09/twitter-logo-4.png'),
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              itemCount: passwords.length,
+              itemBuilder: (context, index) {
+                final password = passwords[index];
+
+                return buildPassword(password);
+              },
+            ),
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 48, 48, 48),
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
@@ -57,27 +75,94 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class PasswordItem extends StatelessWidget {
-  final String text;
-  final String imageUrl;
+Widget buildPassword(Password password) => ListTile(
+      leading: Image.network(
+        password.url,
+        width: 35,
+        height: 35,
+      ),
+      title: Text(password.name),
+      subtitle: Text(password.description),
+      trailing: Icon(Icons.arrow_forward_ios),
+    );
 
-  const PasswordItem({Key? key, this.text = '', this.imageUrl = ''})
-      : super(key: key);
+class MySearchDelegate extends SearchDelegate {
+  final List<Password> passwords;
+
+  MySearchDelegate(this.passwords);
 
   @override
-  Widget build(BuildContext context) {
-    Size deviceSettings = MediaQuery.of(context).size;
-    return Container(
-        width: deviceSettings.width,
-        child: ListTile(
-          leading: Image.network(imageUrl, width: 35, height: 35),
-          title: Text(text),
-          trailing: IconButton(
-            icon: const Icon(Icons.arrow_forward_ios_sharp),
-            onPressed: () {},
-          ),
-        ));
+  ThemeData appBarTheme(BuildContext context) {
+    assert(context != null);
+    final ThemeData theme = Theme.of(context).copyWith(
+      textTheme: const TextTheme(
+        headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 18.0,
+        ),
+      ),
+      inputDecorationTheme: const InputDecorationTheme(
+        border: InputBorder.none,
+      )
+    );
+    return theme;
   }
+
+  @override
+  Widget? buildLeading(BuildContext context) => IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white,),
+        onPressed: () => close(context, null),
+      );
+
+  @override
+  List<Widget>? buildActions(BuildContext context) => [
+        IconButton(
+          icon: const Icon(Icons.clear, color: Colors.white,),
+          onPressed: () {
+            if (query.isEmpty) {
+              close(context, null);
+            } else {
+              query = '';
+            }
+          },
+        ),
+      ];
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<Password> suggestions = passwords.where((searchResult) {
+      final result = searchResult.name.toLowerCase();
+      final input = query.toLowerCase();
+      return result.contains(input);
+    }).toList();
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        final password = suggestions[index];
+
+        return ListTile(
+          leading: Image.network(
+            password.url,
+            width: 35,
+            height: 35,
+          ),
+          title: Text(password.name, style: const TextStyle(color: Colors.black),),
+          onTap: () {
+            query = password.name;
+            showResults(context);
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) => Center(
+        child: Text(
+          query,
+          style: const TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
+        ),
+      );
 }
 
 class HomePageDrawer extends StatelessWidget {
