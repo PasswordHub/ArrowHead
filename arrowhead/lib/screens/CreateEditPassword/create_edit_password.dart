@@ -57,6 +57,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
 
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white, //change your color here
+        ),
         title: Text(
           'Criar senha',
           style: Theme.of(context).textTheme.headline1,
