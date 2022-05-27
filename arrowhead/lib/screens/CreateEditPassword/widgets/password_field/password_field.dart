@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:arrowhead/screens/CreateEditPassword/widgets/password_config.dart';
 import 'package:flutter/material.dart';
 
 import '../check_list_tile.dart';
@@ -65,35 +66,14 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           leading: const Icon(Icons.settings),
           minLeadingWidth: 5,
           title: const Text('Editar configurações de senha'),
-          onTap: () {
-            showDialog(
+          onTap: () async {
+            final password_data = await showDialog(
                 context: context,
-                builder: (ctx) {
-                  return Dialog(
-                    backgroundColor: Colors.transparent,
-                    insetPadding: EdgeInsets.all(10),
-                    child: Container(
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Colors.white),
-                        width: deviceSize.width * 0.7,
-                        height: deviceSize.height * 0.5,
-                        child: Padding(
-                          padding: const EdgeInsets.all(25),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: Text(
-                                  'Olha a criança',
-                                  style: Theme.of(ctx).textTheme.headline1,
-                                ),
-                              )
-                            ],
-                          ),
-                        )),
-                  );
+                builder: (context) {
+                  return PasswordDialogConfig();
                 });
+
+            print(password_data);
           },
         )
       ],
