@@ -93,6 +93,18 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     );
   }
 
+  String? _validatePassword(String? password) {
+    if (password == null || password.isEmpty) {
+      return 'O campo senha não pode estar vazio';
+    }
+
+    if (_passwordStrenght.values.contains(false)) {
+      return 'A sua senha não está segura';
+    }
+
+    return null;
+  }
+
   _generateStrongPassword() {
     int passwordLength = _passwordSettings[PasswordTextField.CHARACTERS_KEY];
     String _password = "";
@@ -147,17 +159,5 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       _passwordStrenght[PasswordTextField.NUMBERS_KEY] =
           password.split(RegExp(r'[0-9]')).length > 3;
     });
-  }
-
-  String? _validatePassword(String? password) {
-    if (password == null || password.isEmpty) {
-      return 'O campo senha não pode estar vazio';
-    }
-
-    if (_passwordStrenght.values.contains(false)) {
-      return 'A sua senha não está segura';
-    }
-
-    return null;
   }
 }
