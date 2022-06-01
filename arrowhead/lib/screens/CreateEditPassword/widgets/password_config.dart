@@ -1,3 +1,4 @@
+import 'package:arrowhead/screens/CreateEditPassword/widgets/password_field/password_field.dart';
 import 'package:flutter/material.dart';
 
 class PasswordDialogConfig extends StatefulWidget {
@@ -8,19 +9,15 @@ class PasswordDialogConfig extends StatefulWidget {
 }
 
 class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
-  final special_character_key = 'has_special_character';
-  final numbers_key = 'has_numbers';
-  final uppercase_key = 'has_uppercase';
-  final number_of_characters_key = 'number_of_characters';
   var passwordProperties = {};
 
   @override
   void initState() {
     passwordProperties = {
-      special_character_key: true,
-      numbers_key: true,
-      uppercase_key: true,
-      number_of_characters_key: 12.0
+      PasswordTextField.SPECIAL_CHARACTERS_KEY: true,
+      PasswordTextField.NUMBERS_KEY: true,
+      PasswordTextField.UPPERCASE_CHARACTERS_KEY: true,
+      PasswordTextField.CHARACTERS_KEY: 12.0
     };
     super.initState();
   }
@@ -49,28 +46,32 @@ class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
                   ),
                 ),
                 CheckboxListTile(
-                  value: passwordProperties[special_character_key],
+                  value: passwordProperties[
+                      PasswordTextField.SPECIAL_CHARACTERS_KEY],
                   onChanged: (value) {
                     setState(() {
-                      passwordProperties[special_character_key] = value;
+                      passwordProperties[
+                          PasswordTextField.SPECIAL_CHARACTERS_KEY] = value;
                     });
                   },
                   title: Text("Caracteres Especiais"),
                 ),
                 CheckboxListTile(
-                  value: passwordProperties[numbers_key],
+                  value: passwordProperties[PasswordTextField.NUMBERS_KEY],
                   onChanged: (value) {
                     setState(() {
-                      passwordProperties[numbers_key] = value;
+                      passwordProperties[PasswordTextField.NUMBERS_KEY] = value;
                     });
                   },
                   title: Text("Números"),
                 ),
                 CheckboxListTile(
-                  value: passwordProperties[uppercase_key],
+                  value: passwordProperties[
+                      PasswordTextField.UPPERCASE_CHARACTERS_KEY],
                   onChanged: (value) {
                     setState(() {
-                      passwordProperties[uppercase_key] = value;
+                      passwordProperties[
+                          PasswordTextField.UPPERCASE_CHARACTERS_KEY] = value;
                     });
                   },
                   title: Text("Maiúsculos"),
@@ -82,14 +83,16 @@ class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
                 Slider(
                   min: 12,
                   max: 30,
-                  label: "${passwordProperties[number_of_characters_key]}",
+                  label:
+                      "${passwordProperties[PasswordTextField.CHARACTERS_KEY]}",
                   divisions: 30 - 12,
-                  value:
-                      passwordProperties[number_of_characters_key].toDouble(),
+                  value: passwordProperties[PasswordTextField.CHARACTERS_KEY]
+                      .toDouble(),
                   onChanged: (value) {
                     var newValue = value.toInt();
                     setState(() {
-                      passwordProperties[number_of_characters_key] = newValue;
+                      passwordProperties[PasswordTextField.CHARACTERS_KEY] =
+                          newValue;
                     });
                   },
                 ),

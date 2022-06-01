@@ -7,6 +7,11 @@ import '../check_list_tile.dart';
 import '../my_text_field.dart';
 
 class PasswordTextField extends StatefulWidget {
+  static const CHARACTERS_KEY = "characters";
+  static const UPPERCASE_CHARACTERS_KEY = "upperCaseCharacters";
+  static const SPECIAL_CHARACTERS_KEY = "specialCharacters";
+  static const NUMBERS_KEY = "numbers";
+
   final Function(String?) onSaved;
   final Function(String?) passwordChange;
   final TextEditingController passwordController;
@@ -22,7 +27,8 @@ class PasswordTextField extends StatefulWidget {
 }
 
 class _PasswordTextFieldState extends State<PasswordTextField> {
-  final Map<String, bool> _passwordChecks = {};
+  Map<String, bool> _passwordStrenght = {};
+  Map<String, dynamic> _passwordSettings = {};
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -50,30 +56,37 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           ],
         ),
         CheckListTile(
-            text: 'Mínimo 12 caracteres',
-            isCheck: _passwordChecks['12characters'] ?? false),
+            text: 'Mínimo de 12 caracteres',
+            isCheck:
+                _passwordStrenght[PasswordTextField.CHARACTERS_KEY] ?? false),
         CheckListTile(
             text: 'Ao menos 1 letra maiúscula',
-            isCheck: _passwordChecks['1upperCaseCharacter'] ?? false),
+            isCheck:
+                _passwordStrenght[PasswordTextField.UPPERCASE_CHARACTERS_KEY] ??
+                    false),
         CheckListTile(
             text: 'Ao menos 3 caracteres especiais',
-            isCheck: _passwordChecks['3specialCharacters'] ?? false),
+            isCheck:
+                _passwordStrenght[PasswordTextField.SPECIAL_CHARACTERS_KEY] ??
+                    false),
         CheckListTile(
             text: 'Ao menos 3 números',
-            isCheck: _passwordChecks['3numbers'] ?? false),
+            isCheck: _passwordStrenght[PasswordTextField.NUMBERS_KEY] ?? false),
         ListTile(
           contentPadding: const EdgeInsets.all(0),
           leading: const Icon(Icons.settings),
           minLeadingWidth: 5,
           title: const Text('Editar configurações de senha'),
           onTap: () async {
-            final password_data = await showDialog(
+            final _passwordSettings = await showDialog<Map<String, dynamic>>(
                 context: context,
                 builder: (context) {
-                  return PasswordDialogConfig();
+                  return const PasswordDialogConfig();
                 });
 
-            print(password_data);
+            this._passwordSettings = _passwordSettings ?? {};
+
+            _generateStrongPassword();
           },
         )
       ],
@@ -81,41 +94,58 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   }
 
   _generateStrongPassword() {
-    int passwordLength = 30;
+    int passwordLength = _passwordSettings[PasswordTextField.CHARACTERS_KEY];
+    String _password = "";
 
     String _lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
     String _upperCaseLetters = _lowerCaseLetters.toUpperCase();
     String _numbers = "0123456789";
     String _special = "@#=+!£\$%&?[](){}";
     String _allowedChars = "";
+
     _allowedChars += _lowerCaseLetters;
-    _allowedChars += _upperCaseLetters;
-    _allowedChars += _numbers;
-    _allowedChars += _special;
-
-    int i = 0;
-    String _result = "";
-    while (i < passwordLength.round()) {
-      int randomInt = Random.secure().nextInt(_allowedChars.length);
-      _result += _allowedChars[randomInt];
-      i++;
+    if (_passwordSettings[PasswordTextField.UPPERCASE_CHARACTERS_KEY]) {
+      _allowedChars += _upperCaseLetters;
     }
-    widget.passwordChange(_result);
+    if (_passwordSettings[PasswordTextField.NUMBERS_KEY]) {
+      _allowedChars += _numbers;
+    }
+    if (_passwordSettings[PasswordTextField.SPECIAL_CHARACTERS_KEY]) {
+      _allowedChars += _special;
+    }
 
-    _onPasswordChange(_result);
+    while (!_passwordStrenght.values.contains(false)) {
+      _password = "";
+      for (int i = 0; i < passwordLength.round(); i++) {
+        int randomInt = Random.secure().nextInt(_allowedChars.length);
+        _password += _allowedChars[randomInt];
+      }
+      _updateCurrentPasswordStrenght(_password);
+    }
+
+    widget.passwordChange(_password);
+
+    _onPasswordChange(_password);
   }
 
   _onPasswordChange(String? value) {
     if (value == null) {
       return;
     }
-    setState(() {
-      _passwordChecks['12characters'] = value.length >= 12;
-      _passwordChecks['1upperCaseCharacter'] = value.contains(RegExp(r'[A-Z]'));
+    _updateCurrentPasswordStrenght(value);
+  }
 
-      _passwordChecks['3specialCharacters'] =
-          value.split(RegExp(r'[!@#$*%&]')).length > 3;
-      _passwordChecks['3numbers'] = value.split(RegExp(r'[0-9]')).length > 3;
+  _updateCurrentPasswordStrenght(String password) {
+    setState(() {
+      _passwordStrenght[PasswordTextField.CHARACTERS_KEY] =
+          password.length >= 12;
+      _passwordStrenght[PasswordTextField.UPPERCASE_CHARACTERS_KEY] =
+          password.contains(RegExp(r'[A-Z]'));
+
+      _passwordStrenght[PasswordTextField.SPECIAL_CHARACTERS_KEY] =
+          password.split(RegExp(r'[!@#$*%&]')).length > 3;
+      _passwordStrenght[PasswordTextField.NUMBERS_KEY] =
+          password.split(RegExp(r'[0-9]')).length > 3;
     });
   }
 
@@ -124,7 +154,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       return 'O campo senha não pode estar vazio';
     }
 
-    if (_passwordChecks.values.contains(false)) {
+    if (_passwordStrenght.values.contains(false)) {
       return 'A sua senha não está segura';
     }
 
