@@ -259,8 +259,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 }),
                 color: Colors.black,
-                icon: Icon(
-                    ((showPassword) ? Icons.remove_red_eye : Icons.password))),
+                icon: Icon(((showPassword)
+                    ? Icons.visibility
+                    : Icons.visibility_off))),
           )),
     );
   }
