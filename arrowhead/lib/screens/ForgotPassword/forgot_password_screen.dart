@@ -1,3 +1,4 @@
+import 'package:arrowhead/screens/ForgotPassword/forgot_password_confimation_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +145,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ))),
           onPressed: () async {
             // TODO: login logic
-            // Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+            Navigator.of(context).pushReplacementNamed(
+                ForgotPasswordConfirmationScreen.routeName);
           },
           child: const Text(
             'Apagar sua conta',
