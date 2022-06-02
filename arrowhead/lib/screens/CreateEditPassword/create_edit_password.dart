@@ -9,7 +9,9 @@ import 'widgets/password_field/password_field.dart';
 class CreateEditPassword extends StatefulWidget {
   static const routeName = '/create_edit_password';
 
-  const CreateEditPassword({Key? key}) : super(key: key);
+  final Password? password;
+
+  const CreateEditPassword({Key? key, this.password}) : super(key: key);
 
   @override
   State<CreateEditPassword> createState() => _CreateEditPasswordState();
@@ -17,9 +19,22 @@ class CreateEditPassword extends StatefulWidget {
 
 class _CreateEditPasswordState extends State<CreateEditPassword> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  final Map<String, String> _formData = {};
+  final Map<String, dynamic> _formData = {};
   final TextEditingController _passwordController = TextEditingController();
+  bool updatePassword = false;
 
+  @override
+  void initState() {
+    if (widget.password != null) {
+      _passwordController.text = widget.password?.password ?? "";
+      _formData.addAll(widget.password?.toJson ?? {});
+    }
+
+    super.initState();
+  }
+
+  /// Save the created/edited Password and add to the
+  /// Password Provider
   void _savePassword(BuildContext context) {
     if (!(_formKey.currentState?.validate() ?? false)) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -35,9 +50,13 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
     }
 
     _formKey.currentState?.save();
-
     _formData[Password.PASSWORD_KEY] = _passwordController.text;
-    Provider.of<PasswordProvider>(context, listen: false).add(_formData);
+
+    if (updatePassword) {
+      Provider.of<PasswordProvider>(context, listen: false).update(_formData);
+    } else {
+      Provider.of<PasswordProvider>(context, listen: false).add(_formData);
+    }
     Navigator.of(context).pop();
   }
 
@@ -57,6 +76,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
 
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white, //change your color here
+        ),
         title: Text(
           'Criar senha',
           style: Theme.of(context).textTheme.headline1,

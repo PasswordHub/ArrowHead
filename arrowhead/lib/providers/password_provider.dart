@@ -64,7 +64,13 @@ class PasswordProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> remove(String id) async {
+  Future<void> remove(Map<String, dynamic>? passwordData) async {
+    if (passwordData == null || passwordData.isEmpty) {
+      return;
+    }
+
+    String id = passwordData[Password.ID_KEY];
+
     int index = _items.indexWhere((element) => element.id == id);
 
     if (index == -1) {
@@ -84,19 +90,25 @@ class PasswordProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> update(Password p) async {
-    int index = _items.indexWhere((element) => element.id == p.id);
+  Future<void> update(Map<String, dynamic>? passwordData) async {
+    if (passwordData == null || passwordData.isEmpty) {
+      return;
+    }
+
+    String id = passwordData[Password.ID_KEY];
+    int index = _items.indexWhere((element) => element.id == id);
 
     if (index == -1) return;
 
-    _items[index] = p;
+    Password updated = Password.fromJson(passwordData);
+    _items[index] = updated;
 
     await _firestore
         .collection(_mainCollection)
         .doc(_userId)
         .collection(_subCollection)
-        .doc(p.id)
-        .update(p.toJson);
+        .doc(id)
+        .update(passwordData);
     notifyListeners();
   }
 }

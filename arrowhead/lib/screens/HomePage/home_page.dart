@@ -196,9 +196,9 @@ class HomePageDrawer extends StatelessWidget {
           decoration: BoxDecoration(color: Color.fromARGB(255, 48, 48, 48)),
           currentAccountPicture: const CircleAvatar(
             radius: 30.0,
-            backgroundImage: NetworkImage(
+            /*backgroundImage: NetworkImage(
                 "https://scontent.fplu3-1.fna.fbcdn.net/v/t1.18169-9/23473074_10155031875776961_8482140412038626648_n.jpg?stp=cp0_dst-jpg_e15_p320x320_q65&_nc_cat=107&ccb=1-5&_nc_sid=7aed08&_nc_ohc=5T1yXKlmgmAAX8KDiPU&_nc_ht=scontent.fplu3-1.fna&oh=00_AT_Me8zbq2IdVW42F5vt5Eam_gXGOXknl5pLc0RvZhCG1Q&oe=62865BDE"),
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.transparent,*/
           ),
         ),
         ListTile(
