@@ -28,6 +28,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
     if (widget.password != null) {
       _passwordController.text = widget.password?.password ?? "";
       _formData.addAll(widget.password?.toJson ?? {});
+      updatePassword = true;
     }
 
     super.initState();
