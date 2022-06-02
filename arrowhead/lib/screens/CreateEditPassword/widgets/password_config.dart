@@ -2,23 +2,20 @@ import 'package:arrowhead/screens/CreateEditPassword/widgets/password_field/pass
 import 'package:flutter/material.dart';
 
 class PasswordDialogConfig extends StatefulWidget {
-  const PasswordDialogConfig({Key? key}) : super(key: key);
+  final Map<String, dynamic> _passwordProperties;
+  const PasswordDialogConfig(this._passwordProperties, {Key? key})
+      : super(key: key);
 
   @override
   State<PasswordDialogConfig> createState() => _PasswordDialogConfigState();
 }
 
 class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
-  Map<String, dynamic> passwordProperties = {};
+  final Map<String, dynamic> passwordProperties = {};
 
   @override
   void initState() {
-    passwordProperties = {
-      PasswordTextField.SPECIAL_CHARACTERS_KEY: true,
-      PasswordTextField.NUMBERS_KEY: true,
-      PasswordTextField.UPPERCASE_CHARACTERS_KEY: true,
-      PasswordTextField.CHARACTERS_KEY: 12.0
-    };
+    passwordProperties.addAll(widget._passwordProperties);
     super.initState();
   }
 
