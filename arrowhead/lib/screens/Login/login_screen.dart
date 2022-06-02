@@ -28,7 +28,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+        body: Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(5.0),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             fullLogo(),
@@ -81,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: const Text(
                             'Esqueceu a senha?',
                             textAlign: TextAlign.right,
-                            style: TextStyle(color: Colors.black, fontSize: 12),
+                            style: TextStyle(color: Colors.black, fontSize: 13),
                           ),
                           onPressed: () {
                             Navigator.of(context)
@@ -103,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget loginBtn(BuildContext context) => Container(
@@ -179,28 +182,25 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget signInBtn(IconData icon) {
     return Container(
       height: 50,
-      width: 115,
       decoration: BoxDecoration(
         border: Border.all(
             color: const Color.fromARGB(255, 190, 190, 190).withOpacity(0.4),
             width: 1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 24),
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(SingupScreen.routeName);
-              },
-              child: const Text(
-                'Criar conta',
-                style:
-                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-              )),
-        ],
-      ),
+      child: TextButton(
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(icon, size: 24),
+            const SizedBox(width: 10),
+            const Text(
+              'Cadastrar',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            )
+          ]),
+          onPressed: () {
+            Navigator.of(context).pushNamed(SingupScreen.routeName);
+          }),
     );
   }
 
