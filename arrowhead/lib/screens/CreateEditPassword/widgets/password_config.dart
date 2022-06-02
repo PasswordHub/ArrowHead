@@ -9,7 +9,7 @@ class PasswordDialogConfig extends StatefulWidget {
 }
 
 class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
-  var passwordProperties = {};
+  Map<String, dynamic> passwordProperties = {};
 
   @override
   void initState() {
