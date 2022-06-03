@@ -65,6 +65,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             )
           ],
         ),
+        SizedBox(
+          height: 20,
+        ),
         CheckListTile(
             text: 'Mínimo de 12 caracteres',
             isCheck:
