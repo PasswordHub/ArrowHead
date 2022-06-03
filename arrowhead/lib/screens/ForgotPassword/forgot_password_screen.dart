@@ -1,3 +1,4 @@
+import 'package:arrowhead/screens/ForgotPassword/forgot_password_confimation_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               children: [
                             TextSpan(
                                 text:
-                                    "Se você quer criar outra conta ou acha que sua senha caiu em mãos erradas, uma opção é "),
+                                    "Se você deseja criar outra conta ou acha que sua senha caiu em mãos erradas, uma opção é "),
                             TextSpan(
                                 text: "apagar sua conta: ",
                                 style: TextStyle(fontWeight: FontWeight.bold)),
@@ -144,7 +145,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ))),
           onPressed: () async {
             // TODO: login logic
-            // Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ForgotPasswordConfirmationScreen(
+                        email: emailController.text)));
           },
           child: const Text(
             'Apagar sua conta',
