@@ -30,6 +30,9 @@ class ThemeProvider with ChangeNotifier {
       appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 48, 48, 48)),
       iconTheme: const IconThemeData(color: Colors.black),
       canvasColor: const MaterialColor(0xFFFFFFFF, color),
+      sliderTheme: ThemeData.light().sliderTheme.copyWith(
+          valueIndicatorColor: Colors.white,
+          valueIndicatorTextStyle: TextStyle(color: Colors.black)),
       colorScheme: ColorScheme(
           primary: Colors.blue,
           onPrimary: Colors.lightBlue,

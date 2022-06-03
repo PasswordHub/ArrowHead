@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/password.dart';
 import '../../../providers/password_provider.dart';
 
 class MySearchDelegate extends SearchDelegate<Password> {
+  Password? currPassword;
   @override
   ThemeData appBarTheme(BuildContext context) {
     assert(context != null);
@@ -55,7 +57,6 @@ class MySearchDelegate extends SearchDelegate<Password> {
         final input = query.toLowerCase();
         return result.contains(input);
       }).toList();
-
       return password.size == 0
           ? const Center(
               child: Text(
@@ -81,6 +82,7 @@ class MySearchDelegate extends SearchDelegate<Password> {
                     ),
                     onTap: () {
                       query = password.name;
+                      currPassword = password;
                       showResults(context);
                     },
                   );
@@ -91,10 +93,56 @@ class MySearchDelegate extends SearchDelegate<Password> {
   }
 
   @override
-  Widget buildResults(BuildContext context) => Center(
-        child: Text(
-          query,
-          style: const TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
-        ),
-      );
+  Widget buildResults(BuildContext context) => SingleChildScrollView(
+          child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Wrap(
+            spacing: 20, // to apply margin in the main axis of the wrap
+            runSpacing: 20,
+            children: [
+              Text("Nome:", style: Theme.of(context).textTheme.bodyText1),
+              buildFieldWithClipboardInformation(
+                  currPassword?.name ?? '', context),
+              Text("Senha:", style: Theme.of(context).textTheme.bodyText1),
+              buildFieldWithClipboardInformation(
+                  currPassword?.name ?? '', context),
+              Text("Url:", style: Theme.of(context).textTheme.bodyText1),
+              buildFieldWithClipboardInformation(
+                  currPassword?.name ?? '', context),
+              Text("Descrição:", style: Theme.of(context).textTheme.bodyText1),
+              buildFieldWithClipboardInformation(
+                  currPassword?.name ?? '', context),
+            ]),
+      ));
+}
+
+Widget buildFieldWithClipboardInformation(String text, BuildContext context) {
+  return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 2),
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 224, 224, 224),
+          borderRadius: BorderRadius.circular(15)),
+      child: TextField(
+        autocorrect: false,
+        enableSuggestions: false,
+        autofocus: false,
+        readOnly: true,
+        controller: TextEditingController(text: text),
+        keyboardType: TextInputType.visiblePassword,
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            suffixIcon: IconButton(
+                icon: const Icon(Icons.paste),
+                color: Colors.black,
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: text));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Texto copiado',
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                    backgroundColor: Colors.grey,
+                  ));
+                })),
+      ));
 }

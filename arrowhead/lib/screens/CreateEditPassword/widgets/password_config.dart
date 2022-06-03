@@ -30,7 +30,7 @@ class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
               borderRadius: BorderRadius.all(Radius.circular(20)),
               color: Colors.white),
           width: deviceSize.width * 0.7,
-          height: deviceSize.height * 0.53,
+          height: deviceSize.height * 0.6,
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
@@ -43,7 +43,7 @@ class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 CheckboxListTile(
@@ -88,6 +88,7 @@ class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
                 Slider(
                   min: 12,
                   max: 30,
+                  activeColor: Colors.white,
                   label: passwordProperties[PasswordTextField.CHARACTERS_KEY]
                       .toString(),
                   divisions: 30 - 12,

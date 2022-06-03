@@ -1,13 +1,12 @@
 import 'package:arrowhead/models/password.dart';
 import 'package:arrowhead/providers/password_provider.dart';
 import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
+import 'package:arrowhead/screens/HomePage/drawer.dart';
+import 'package:arrowhead/screens/HomePage/password_information.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
-import '../../models/login.dart';
-import '../../providers/auth_provider.dart';
-import '../Settings/user_settings.dart';
 import 'Search/MySearchDelegate.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String query = '';
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
         iconTheme: const IconThemeData(color: Colors.white),
         actions: <Widget>[
           IconButton(
-            icon: new Icon(Icons.search),
+            icon: const Icon(Icons.search),
             tooltip: 'Search',
             color: Colors.white,
             onPressed: () {
@@ -70,8 +70,21 @@ class _HomePageState extends State<HomePage> {
   Widget buildScaffold(BuildContext context) {
     return Consumer<PasswordProvider>(
         builder: (context, passwords, _) => passwords.size == 0
-            ? const Center(
-                child: Text('Nenhuma senha foi inserida'),
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/emptybox.png',
+                      scale: 1.5,
+                    ),
+                    Text(
+                      'Nenhuma senha adicionada',
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 153, 153, 153)),
+                    ),
+                  ],
+                ),
               )
             : (ListView.builder(
                 itemCount: passwords.size,
@@ -81,7 +94,7 @@ class _HomePageState extends State<HomePage> {
               )));
   }
 
-  void _delete(BuildContext context, Password password) => showDialog(
+  _delete(BuildContext context, Password password) => showDialog(
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
@@ -114,92 +127,40 @@ class _HomePageState extends State<HomePage> {
         );
       });
 
-  Widget buildPassword(Password password, BuildContext context) => Slidable(
-        actionPane: const SlidableDrawerActionPane(),
-        secondaryActions: [
-          IconSlideAction(
-            caption: 'Excluir',
-            color: Colors.red,
-            icon: Icons.delete,
-            onTap: () => _delete(context, password),
-          ),
-          IconSlideAction(
-              caption: 'Editar',
-              color: Colors.blue,
-              icon: Icons.edit,
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CreateEditPassword(
-                            password: password,
-                          ))))
-        ],
-        child: ListTile(
-          title: Text(password.name),
-          subtitle: Text(password.description),
-          trailing: const Icon(Icons.arrow_forward_ios),
+  _showPasswordInfo(Password password) {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (context) => PasswordInfo(password: password)));
+  }
+
+  _editPassword(Password password) {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (context) => CreateEditPassword(password: password)));
+  }
+
+  Widget buildPassword(Password password, BuildContext context) => ListTile(
+        onTap: () => _showPasswordInfo(password),
+        onLongPress: () async =>
+            await Clipboard.setData(ClipboardData(text: password.password)),
+        title: Text(password.name),
+        subtitle: Text(password.description),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.edit,
+                color: Colors.blueGrey,
+              ),
+              onPressed: () => _editPassword(password),
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () => _delete(context, password),
+            )
+          ],
         ),
       );
-}
-
-class HomePageDrawer extends StatelessWidget {
-  const HomePageDrawer({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Login? currUser = Provider.of<Auth>(context, listen: false).currUser;
-    return Drawer(
-        child: ListView(
-      padding: EdgeInsets.zero,
-      children: [
-        UserAccountsDrawerHeader(
-          accountName: Text(
-            currUser?.name ?? '',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          accountEmail: Text(
-            currUser?.email ?? '',
-            style: TextStyle(),
-          ),
-          decoration: BoxDecoration(color: Color.fromARGB(255, 48, 48, 48)),
-          currentAccountPicture: const CircleAvatar(
-            radius: 30.0,
-            /*backgroundImage: NetworkImage(
-                "https://scontent.fplu3-1.fna.fbcdn.net/v/t1.18169-9/23473074_10155031875776961_8482140412038626648_n.jpg?stp=cp0_dst-jpg_e15_p320x320_q65&_nc_cat=107&ccb=1-5&_nc_sid=7aed08&_nc_ohc=5T1yXKlmgmAAX8KDiPU&_nc_ht=scontent.fplu3-1.fna&oh=00_AT_Me8zbq2IdVW42F5vt5Eam_gXGOXknl5pLc0RvZhCG1Q&oe=62865BDE"),
-            backgroundColor: Colors.transparent,*/
-          ),
-        ),
-        ListTile(
-          leading: Icon(Icons.lock),
-          title: Text('Senhas', style: Theme.of(context).textTheme.subtitle2),
-          onTap: () => Navigator.of(context).pushNamed(HomePage.routeName),
-        ),
-        ListTile(
-          leading: Icon(Icons.storage_rounded),
-          title: Text('Grupos de Senhas',
-              style: Theme.of(context).textTheme.subtitle1),
-        ),
-        ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Configurações',
-                style: Theme.of(context).textTheme.subtitle2),
-            onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => UserSettings()))),
-        ListTile(
-          onTap: () async => Provider.of<Auth>(context, listen: false).logout(),
-          leading: const Icon(
-            Icons.logout,
-            color: Colors.red,
-          ),
-          title: const Text(
-            'Sair',
-            style: TextStyle(
-                fontWeight: FontWeight.w500, color: Colors.red, fontSize: 16),
-          ),
-        )
-      ],
-    ));
-  }
 }
