@@ -2,10 +2,13 @@ import 'package:arrowhead/models/password.dart';
 import 'package:arrowhead/providers/password_provider.dart';
 import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/login.dart';
 import '../../providers/auth_provider.dart';
+import '../Settings/user_settings.dart';
+import 'Search/MySearchDelegate.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -27,7 +30,7 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: const Color.fromARGB(255, 48, 48, 48),
         iconTheme: const IconThemeData(color: Colors.white),
-        /*actions: <Widget>[
+        actions: <Widget>[
           IconButton(
             icon: new Icon(Icons.search),
             tooltip: 'Search',
@@ -39,7 +42,7 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-        ],*/
+        ],
       ),
       drawer: const HomePageDrawer(),
       body: FutureBuilder(
@@ -63,111 +66,78 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-Widget buildScaffold(BuildContext context) {
-  return Consumer<PasswordProvider>(
-      builder: (context, passwords, _) => passwords.size == 0
-          ? const Center(
-              child: Text('Nenhuma senha foi inserida'),
-            )
-          : (ListView.builder(
-              itemCount: passwords.size,
-              itemBuilder: (context, index) {
-                return buildPassword(passwords.items[index]);
-              },
-            )));
-}
-
-Widget buildPassword(Password password) => ListTile(
-      title: Text(password.name),
-      subtitle: Text(password.description),
-      trailing: const Icon(Icons.arrow_forward_ios),
-    );
-
-class MySearchDelegate extends SearchDelegate {
-  final List<Password> passwords;
-
-  MySearchDelegate(this.passwords);
-
-  @override
-  ThemeData appBarTheme(BuildContext context) {
-    assert(context != null);
-    final ThemeData theme = Theme.of(context).copyWith(
-        textTheme: const TextTheme(
-          headline6: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-          ),
-        ),
-        inputDecorationTheme: const InputDecorationTheme(
-          border: InputBorder.none,
-        ));
-    return theme;
+  Widget buildScaffold(BuildContext context) {
+    return Consumer<PasswordProvider>(
+        builder: (context, passwords, _) => passwords.size == 0
+            ? const Center(
+                child: Text('Nenhuma senha foi inserida'),
+              )
+            : (ListView.builder(
+                itemCount: passwords.size,
+                itemBuilder: (context, index) {
+                  return buildPassword(passwords.items[index], context);
+                },
+              )));
   }
 
-  @override
-  Widget? buildLeading(BuildContext context) => IconButton(
-        icon: const Icon(
-          Icons.arrow_back,
-          color: Colors.white,
-        ),
-        onPressed: () => close(context, null),
-      );
-
-  @override
-  List<Widget>? buildActions(BuildContext context) => [
-        IconButton(
-          icon: const Icon(
-            Icons.clear,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            if (query.isEmpty) {
-              close(context, null);
-            } else {
-              query = '';
-            }
-          },
-        ),
-      ];
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<Password> suggestions = passwords.where((searchResult) {
-      final result = searchResult.name.toLowerCase();
-      final input = query.toLowerCase();
-      return result.contains(input);
-    }).toList();
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        final password = suggestions[index];
-
-        return ListTile(
-          leading: Image.network(
-            password.url,
-            width: 35,
-            height: 35,
-          ),
-          title: Text(
-            password.name,
-            style: const TextStyle(color: Colors.black),
-          ),
-          onTap: () {
-            query = password.name;
-            showResults(context);
-          },
+  void _delete(BuildContext context, Password password) => showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          title: const Text('Deseja Continuar?'),
+          content: Text(
+              'Tem certeza que deseja remover a senha "${password.name}"?'),
+          backgroundColor: Colors.white,
+          actions: [
+            // The "Yes" button
+            TextButton(
+                onPressed: () {
+                  // Remove the password
+                  Provider.of<PasswordProvider>(context, listen: false)
+                      .remove(password.toJson);
+                  // Close the dialog
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Sim',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold))),
+            TextButton(
+                onPressed: () {
+                  // Close the dialog
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Não',
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold)))
+          ],
         );
-      },
-    );
-  }
+      });
 
-  @override
-  Widget buildResults(BuildContext context) => Center(
-        child: Text(
-          query,
-          style: const TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
+  Widget buildPassword(Password password, BuildContext context) => Slidable(
+        actionPane: const SlidableDrawerActionPane(),
+        secondaryActions: [
+          IconSlideAction(
+            caption: 'Excluir',
+            color: Colors.red,
+            icon: Icons.delete,
+            onTap: () => _delete(context, password),
+          ),
+          IconSlideAction(
+              caption: 'Editar',
+              color: Colors.blue,
+              icon: Icons.edit,
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateEditPassword(
+                            password: password,
+                          ))))
+        ],
+        child: ListTile(
+          title: Text(password.name),
+          subtitle: Text(password.description),
+          trailing: const Icon(Icons.arrow_forward_ios),
         ),
       );
 }
@@ -203,7 +173,8 @@ class HomePageDrawer extends StatelessWidget {
         ),
         ListTile(
           leading: Icon(Icons.lock),
-          title: Text('Senhas', style: Theme.of(context).textTheme.subtitle1),
+          title: Text('Senhas', style: Theme.of(context).textTheme.subtitle2),
+          onTap: () => Navigator.of(context).pushNamed(HomePage.routeName),
         ),
         ListTile(
           leading: Icon(Icons.storage_rounded),
@@ -211,10 +182,11 @@ class HomePageDrawer extends StatelessWidget {
               style: Theme.of(context).textTheme.subtitle1),
         ),
         ListTile(
-          leading: Icon(Icons.settings),
-          title: Text('Configurações',
-              style: Theme.of(context).textTheme.subtitle1),
-        ),
+            leading: Icon(Icons.settings),
+            title: Text('Configurações',
+                style: Theme.of(context).textTheme.subtitle2),
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => UserSettings()))),
         ListTile(
           onTap: () async => Provider.of<Auth>(context, listen: false).logout(),
           leading: const Icon(
