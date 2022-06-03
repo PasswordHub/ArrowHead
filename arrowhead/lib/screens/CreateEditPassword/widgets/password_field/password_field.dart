@@ -27,8 +27,18 @@ class PasswordTextField extends StatefulWidget {
 }
 
 class _PasswordTextFieldState extends State<PasswordTextField> {
-  Map<String, bool> _passwordStrenght = {};
-  Map<String, dynamic> _passwordSettings = {};
+  final Map<String, bool> _passwordStrenght = {};
+  final Map<String, dynamic> _passwordSettings = {};
+
+  @override
+  void initState() {
+    _passwordSettings[PasswordTextField.CHARACTERS_KEY] = 12;
+    _passwordSettings[PasswordTextField.UPPERCASE_CHARACTERS_KEY] = true;
+    _passwordSettings[PasswordTextField.SPECIAL_CHARACTERS_KEY] = true;
+    _passwordSettings[PasswordTextField.NUMBERS_KEY] = true;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -54,6 +64,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               ),
             )
           ],
+        ),
+        SizedBox(
+          height: 20,
         ),
         CheckListTile(
             text: 'Mínimo de 12 caracteres',
@@ -81,12 +94,13 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             final _passwordSettings = await showDialog<Map<String, dynamic>>(
                 context: context,
                 builder: (context) {
-                  return const PasswordDialogConfig();
+                  return PasswordDialogConfig(this._passwordSettings);
                 });
-
-            this._passwordSettings = _passwordSettings ?? {};
-
-            _generateStrongPassword();
+            if (_passwordSettings != null) {
+              this._passwordSettings.clear();
+              this._passwordSettings.addAll(_passwordSettings);
+              _generateStrongPassword();
+            }
           },
         )
       ],
@@ -126,7 +140,8 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       _allowedChars += _special;
     }
 
-    while (!_passwordStrenght.values.contains(false)) {
+    _updateCurrentPasswordStrenght(_password);
+    while (_passwordStrenght.values.contains(false)) {
       _password = "";
       for (int i = 0; i < passwordLength.round(); i++) {
         int randomInt = Random.secure().nextInt(_allowedChars.length);
@@ -134,7 +149,6 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       }
       _updateCurrentPasswordStrenght(_password);
     }
-
     widget.passwordChange(_password);
 
     _onPasswordChange(_password);

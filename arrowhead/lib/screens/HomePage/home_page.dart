@@ -179,7 +179,7 @@ class HomePageDrawer extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.storage_rounded),
           title: Text('Grupos de Senhas',
-              style: Theme.of(context).textTheme.subtitle2),
+              style: Theme.of(context).textTheme.subtitle1),
         ),
         ListTile(
             leading: Icon(Icons.settings),
@@ -194,11 +194,9 @@ class HomePageDrawer extends StatelessWidget {
             color: Colors.red,
           ),
           title: const Text(
-            'logout',
+            'Sair',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.red,
-            ),
+                fontWeight: FontWeight.w500, color: Colors.red, fontSize: 16),
           ),
         )
       ],
