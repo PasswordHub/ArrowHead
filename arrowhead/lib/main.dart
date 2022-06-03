@@ -77,7 +77,7 @@ class MyMaterialApp extends StatelessWidget {
         ForgotPasswordConfirmationScreen.routeName: (ctx) =>
             ForgotPasswordConfirmationScreen(),
         HomePage.routeName: (ctx) => HomePage(),
-        CreateEditPassword.routeName: (ctx) => CreateEditPassword()
+        CreateEditPassword.routeName: (ctx) => CreateEditPassword(),
         PasswordInfo.routeName: (ctx) => const PasswordInfo(),
       },
     );

@@ -91,6 +91,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
                   )
                 });
       } else {
+        print("adicionar senha");
         Provider.of<PasswordProvider>(context, listen: false)
             .add(_formData)
             .then((value) => {

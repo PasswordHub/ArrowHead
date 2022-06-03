@@ -42,6 +42,8 @@ class PasswordProvider with ChangeNotifier {
       return Password.fromJson(element.data());
     }).toList();
 
+    print(_items);
+
     notifyListeners();
   }
 
@@ -49,9 +51,11 @@ class PasswordProvider with ChangeNotifier {
     if (passwordData == null || passwordData.isEmpty) {
       return;
     }
-
-    passwordData[Password.ID_KEY] = _userId + _items.length.toString();
+    print(_items.length);
+    passwordData[Password.ID_KEY] =
+        _userId + passwordData[Password.NAME_KEY].hashCode.toString();
     passwordData[Password.LOGIN_KEY] = '';
+    _items.add(Password.fromJson(passwordData));
 
     await _firestore
         .collection(_mainCollection)
@@ -60,7 +64,6 @@ class PasswordProvider with ChangeNotifier {
         .doc(passwordData[Password.ID_KEY])
         .set(passwordData);
 
-    _items.add(Password.fromJson(passwordData));
     notifyListeners();
   }
 
