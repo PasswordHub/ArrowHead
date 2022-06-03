@@ -5,21 +5,25 @@ import 'package:arrowhead/screens/CreateEditPassword/create_edit_password.dart';
 import 'package:arrowhead/screens/ForgotPassword/forgot_password_confimation_screen.dart';
 import 'package:arrowhead/screens/ForgotPassword/forgot_password_screen.dart';
 import 'package:arrowhead/screens/HomePage/home_page.dart';
+import 'package:arrowhead/screens/Settings/user_settings.dart';
 import 'package:arrowhead/screens/SignUp/signup_screen.dart';
 import 'package:arrowhead/screens/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+import 'package:provider/provider.dart';
+
 import '/screens/CreateEditPassword/create_edit_password.dart';
 import '/screens/HomePage/home_page.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'screens/Login/login_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'screens/Login/login_screen.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Settings.init();
   runApp(const ArrowHead());
 }
 
