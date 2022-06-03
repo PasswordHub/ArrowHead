@@ -110,73 +110,97 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget loginBtn(BuildContext context) => Container(
-        height: 50,
-        padding: const EdgeInsets.only(top: 5),
-        child: isLoading
-            ? const CircularProgressIndicator()
-            : ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 13, 189, 62)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ))),
-                onPressed: () async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  if (emailController.text.isEmpty ||
-                      passwordController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Por favor, preencha os campos de email e senha',
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                        backgroundColor: Theme.of(context).colorScheme.error,
-                      ),
-                    );
-
-                    setState(() {
-                      isLoading = false;
-                    });
-                  }
-
-                  try {
-                    Provider.of<Auth>(context, listen: false).signIn({
-                      Login.EMAIL_KEY: emailController.text,
-                      Login.PASSWORD_KEY: passwordController.text
-                    });
-                  } catch (error) {
-                    showDialog(
-                        context: context,
-                        builder: (ctx) => const FittedBox(
-                              child: AlertDialog(
-                                title: Text('Um erro ocorreu'),
-                                content:
-                                    Text('A senha inserida está incorreta'),
-                              ),
-                            ));
-                    setState(() {
-                      isLoading = false;
-                    });
-                  }
-
-                  setState(() {
-                    isLoading = false;
-                  });
-                },
-                child: const Text(
-                  'Entrar',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
+      height: 50,
+      padding: const EdgeInsets.only(top: 5),
+      child: ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(
+                const Color.fromARGB(255, 13, 189, 62)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ))),
+        child: !isLoading
+            ? const Text(
+                'Entrar',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              )
+            : const SizedBox(
+                width: 23,
+                height: 23,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Colors.white,
+                  strokeWidth: 3,
                 ),
               ),
-      );
+        onPressed: () async {
+          setState(() {
+            isLoading = true;
+          });
+
+          if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Por favor, preencha os campos de email e senha',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            try {
+              Provider.of<Auth>(context, listen: false)
+                  .signIn({
+                    Login.EMAIL_KEY: emailController.text,
+                    Login.PASSWORD_KEY: passwordController.text
+                  })
+                  .then((value) => {
+                        print("Logado com sucesso"),
+                        setState(() {
+                          isLoading = false;
+                        })
+                      })
+                  .catchError((error) => {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'E-mail ou senha inválidos',
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                        setState(() {
+                          isLoading = false;
+                        })
+                      });
+            } catch (error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Ocorreu algum erro interno! Tente novamente mais tarde.',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+              setState(() {
+                isLoading = false;
+              });
+            }
+          }
+        },
+      ));
 
   /// Botão para a página de cadastro
   Widget signInBtn(IconData icon) {

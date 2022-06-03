@@ -109,55 +109,100 @@ class _SingupScreenState extends State<SingupScreen> {
                   RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ))),
+          child: !isLoading
+              ? const Text(
+                  'Finalizar',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox(
+                  width: 23,
+                  height: 23,
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.grey,
+                    color: Colors.white,
+                    strokeWidth: 3,
+                  ),
+                ),
           onPressed: () async {
             try {
               setState(() {
                 isLoading = true;
               });
 
-              await Provider.of<Auth>(context, listen: false).signUp({
-                Login.EMAIL_KEY: emailController.text,
-                Login.PASSWORD_KEY: passwordController.text,
-                Login.NAME_KEY: nameController.text
-              });
+              Provider.of<Auth>(context, listen: false)
+                  .signUp({
+                    Login.EMAIL_KEY: emailController.text,
+                    Login.PASSWORD_KEY: passwordController.text,
+                    Login.NAME_KEY: nameController.text
+                  })
+                  .then((value) => {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              "Conta criada com sucesso!",
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                        setState(() {
+                          isLoading = true;
+                        }),
+                        Navigator.of(context)
+                            .pushReplacementNamed(HomePage.routeName)
+                      })
+                  .catchError((error) => {
+                        setState(() {
+                          isLoading = false;
+                        }),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              "Erro! Informações inválidas \n" +
+                                  error.toString(),
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      });
             } on PlatformException catch (error) {
-              var message = 'Um erro ocorreu, por favor olhe usas credenciais';
-              if (error.message == null) {
-                return;
-              }
-              message = error.message ?? '';
-              showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                        title: const Text('Um erro ocorreu'),
-                        content: Text(message),
-                      ));
+              var message =
+                  'Um erro ocorreu, por favor confira usas credenciais';
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
               setState(() {
                 isLoading = false;
               });
             } catch (error) {
-              showDialog(
-                  context: context,
-                  builder: (ctx) => FittedBox(
-                        child: AlertDialog(
-                          title: const Text('Um erro ocorreu'),
-                          content: Text(error.toString()),
-                        ),
-                      ));
+              var message = 'Erro interno.';
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
               setState(() {
                 isLoading = false;
               });
             }
-            Navigator.of(context).pushReplacementNamed(HomePage.routeName);
           },
-          child: const Text(
-            'Finalizar',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-          ),
         ),
       );
 
