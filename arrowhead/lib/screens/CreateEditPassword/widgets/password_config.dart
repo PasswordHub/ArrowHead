@@ -2,23 +2,20 @@ import 'package:arrowhead/screens/CreateEditPassword/widgets/password_field/pass
 import 'package:flutter/material.dart';
 
 class PasswordDialogConfig extends StatefulWidget {
-  const PasswordDialogConfig({Key? key}) : super(key: key);
+  final Map<String, dynamic> _passwordProperties;
+  const PasswordDialogConfig(this._passwordProperties, {Key? key})
+      : super(key: key);
 
   @override
   State<PasswordDialogConfig> createState() => _PasswordDialogConfigState();
 }
 
 class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
-  Map<String, dynamic> passwordProperties = {};
+  final Map<String, dynamic> passwordProperties = {};
 
   @override
   void initState() {
-    passwordProperties = {
-      PasswordTextField.SPECIAL_CHARACTERS_KEY: true,
-      PasswordTextField.NUMBERS_KEY: true,
-      PasswordTextField.UPPERCASE_CHARACTERS_KEY: true,
-      PasswordTextField.CHARACTERS_KEY: 12.0
-    };
+    passwordProperties.addAll(widget._passwordProperties);
     super.initState();
   }
 
@@ -35,15 +32,19 @@ class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
           width: deviceSize.width * 0.7,
           height: deviceSize.height * 0.53,
           child: Padding(
-            padding: const EdgeInsets.all(25),
+            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Center(
                   child: Text(
                     'Gerador de Senhas',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 CheckboxListTile(
                   value: passwordProperties[
@@ -76,15 +77,19 @@ class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
                   },
                   title: Text("Maiúsculos"),
                 ),
-                Text(
-                  "N° de caracteres",
-                  style: TextStyle(color: Colors.black),
+                const SizedBox(
+                  height: 20,
                 ),
+                const Center(
+                    child: Text(
+                  "N° de caracteres",
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                )),
                 Slider(
                   min: 12,
                   max: 30,
-                  label:
-                      "${passwordProperties[PasswordTextField.CHARACTERS_KEY]}",
+                  label: passwordProperties[PasswordTextField.CHARACTERS_KEY]
+                      .toString(),
                   divisions: 30 - 12,
                   value: passwordProperties[PasswordTextField.CHARACTERS_KEY]
                       .toDouble(),
@@ -111,7 +116,7 @@ class _PasswordDialogConfigState extends State<PasswordDialogConfig> {
                         Navigator.of(context).pop(passwordProperties);
                       },
                       child: Text("Salvar",
-                          style: TextStyle(color: Colors.black))),
+                          style: TextStyle(color: Colors.white))),
                 )
               ],
             ),

@@ -28,7 +28,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+        body: Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(5.0),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             fullLogo(),
@@ -81,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: const Text(
                             'Esqueceu a senha?',
                             textAlign: TextAlign.right,
-                            style: TextStyle(color: Colors.black, fontSize: 12),
+                            style: TextStyle(color: Colors.black, fontSize: 13),
                           ),
                           onPressed: () {
                             Navigator.of(context)
@@ -103,104 +106,125 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget loginBtn(BuildContext context) => Container(
-        height: 50,
-        padding: const EdgeInsets.only(top: 5),
-        child: isLoading
-            ? const CircularProgressIndicator()
-            : ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 13, 189, 62)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ))),
-                onPressed: () async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  if (emailController.text.isEmpty ||
-                      passwordController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Por favor, preencha os campos de email e senha',
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                        backgroundColor: Theme.of(context).colorScheme.error,
-                      ),
-                    );
-
-                    setState(() {
-                      isLoading = false;
-                    });
-                  }
-
-                  try {
-                    Provider.of<Auth>(context, listen: false).signIn({
-                      Login.EMAIL_KEY: emailController.text,
-                      Login.PASSWORD_KEY: passwordController.text
-                    });
-                  } catch (error) {
-                    showDialog(
-                        context: context,
-                        builder: (ctx) => const FittedBox(
-                              child: AlertDialog(
-                                title: Text('Um erro ocorreu'),
-                                content:
-                                    Text('A senha inserida está incorreta'),
-                              ),
-                            ));
-                    setState(() {
-                      isLoading = false;
-                    });
-                  }
-
-                  setState(() {
-                    isLoading = false;
-                  });
-                },
-                child: const Text(
-                  'Entrar',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
+      height: 50,
+      padding: const EdgeInsets.only(top: 5),
+      child: ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(
+                const Color.fromARGB(255, 13, 189, 62)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ))),
+        child: !isLoading
+            ? const Text(
+                'Entrar',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              )
+            : const SizedBox(
+                width: 23,
+                height: 23,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Colors.white,
+                  strokeWidth: 3,
                 ),
               ),
-      );
+        onPressed: () async {
+          setState(() {
+            isLoading = true;
+          });
+
+          if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Por favor, preencha os campos de email e senha',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            try {
+              Provider.of<Auth>(context, listen: false)
+                  .signIn({
+                    Login.EMAIL_KEY: emailController.text,
+                    Login.PASSWORD_KEY: passwordController.text
+                  })
+                  .then((value) => {
+                        print("Logado com sucesso"),
+                        setState(() {
+                          isLoading = false;
+                        })
+                      })
+                  .catchError((error) => {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'E-mail ou senha inválidos',
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                        setState(() {
+                          isLoading = false;
+                        })
+                      });
+            } catch (error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Ocorreu algum erro interno! Tente novamente mais tarde.',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+              setState(() {
+                isLoading = false;
+              });
+            }
+          }
+        },
+      ));
 
   /// Botão para a página de cadastro
   Widget signInBtn(IconData icon) {
     return Container(
       height: 50,
-      width: 115,
       decoration: BoxDecoration(
         border: Border.all(
             color: const Color.fromARGB(255, 190, 190, 190).withOpacity(0.4),
             width: 1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 24),
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(SingupScreen.routeName);
-              },
-              child: const Text(
-                'Criar conta',
-                style:
-                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-              )),
-        ],
-      ),
+      child: TextButton(
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(icon, size: 24),
+            const SizedBox(width: 10),
+            const Text(
+              'Cadastrar',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            )
+          ]),
+          onPressed: () {
+            Navigator.of(context).pushNamed(SingupScreen.routeName);
+          }),
     );
   }
 
@@ -259,8 +283,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 }),
                 color: Colors.black,
-                icon: Icon(
-                    ((showPassword) ? Icons.remove_red_eye : Icons.password))),
+                icon: Icon(((showPassword)
+                    ? Icons.visibility
+                    : Icons.visibility_off))),
           )),
     );
   }
