@@ -280,8 +280,8 @@ class _SingupScreenState extends State<SingupScreen> {
                     }),
                     color: Colors.black,
                     icon: Icon(((showPassword)
-                        ? Icons.remove_red_eye
-                        : Icons.password))),
+                        ? Icons.visibility
+                        : Icons.visibility_off))),
               ),
             ),
           )
