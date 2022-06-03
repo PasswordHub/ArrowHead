@@ -203,16 +203,17 @@ class HomePageDrawer extends StatelessWidget {
         ),
         ListTile(
           leading: Icon(Icons.lock),
-          title: Text('Senhas', style: Theme.of(context).textTheme.subtitle2),
+          title: Text('Senhas', style: Theme.of(context).textTheme.subtitle1),
         ),
         ListTile(
           leading: Icon(Icons.storage_rounded),
           title: Text('Grupos de Senhas',
-              style: Theme.of(context).textTheme.subtitle2),
+              style: Theme.of(context).textTheme.subtitle1),
         ),
         ListTile(
           leading: Icon(Icons.settings),
-          title: Text('Settings', style: Theme.of(context).textTheme.subtitle2),
+          title: Text('Configurações',
+              style: Theme.of(context).textTheme.subtitle1),
         ),
         ListTile(
           onTap: () async => Provider.of<Auth>(context, listen: false).logout(),
@@ -221,11 +222,9 @@ class HomePageDrawer extends StatelessWidget {
             color: Colors.red,
           ),
           title: const Text(
-            'logout',
+            'Sair',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.red,
-            ),
+                fontWeight: FontWeight.w500, color: Colors.red, fontSize: 16),
           ),
         )
       ],

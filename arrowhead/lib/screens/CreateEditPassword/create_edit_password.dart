@@ -70,8 +70,14 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
           style: ElevatedButton.styleFrom(
             primary: const Color.fromARGB(255, 13, 189, 62),
           ),
-          child: Text('Criar senha',
-              style: Theme.of(context).textTheme.bodyText2)),
+          child: Text(
+            'Criar senha',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          )),
     );
 
     return Scaffold(
@@ -79,9 +85,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
         iconTheme: const IconThemeData(
           color: Colors.white, //change your color here
         ),
-        title: Text(
+        title: const Text(
           'Criar senha',
-          style: Theme.of(context).textTheme.headline1,
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: SingleChildScrollView(
