@@ -137,8 +137,8 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
           primary: const Color.fromARGB(255, 13, 189, 62),
         ),
         child: !isLoading
-            ? Text(
-                'Criar senha',
+            ? const Text(
+                'Salvar',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -162,9 +162,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
         iconTheme: const IconThemeData(
           color: Colors.white, //change your color here
         ),
-        title: const Text(
-          'Criar senha',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          updatePassword ? 'Editar senha' : 'Criar senha',
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       body: SingleChildScrollView(

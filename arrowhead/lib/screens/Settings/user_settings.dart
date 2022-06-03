@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
 class UserSettings extends StatefulWidget {
   const UserSettings({Key? key}) : super(key: key);
@@ -15,16 +13,16 @@ class _UserSettings extends State<UserSettings> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          iconTheme: const IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: const Color.fromARGB(255, 48, 48, 48),
-          title: Text(
-            'Criar senha',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        body: SettingsGroup(title: "Tela", children: <Widget>[
+      iconTheme: const IconThemeData(
+        color: Colors.white, //change your color here
+      ),
+      backgroundColor: const Color.fromARGB(255, 48, 48, 48),
+      title: Text(
+        'Configurações',
+        style: TextStyle(color: Colors.white),
+      ),
+    ));
+    /*body: SettingsGroup(title: "Tela", children: <Widget>[
           SwitchSettingsTile(
             settingKey: 'key-dark-mode',
             title: 'Dark Mode',
@@ -35,6 +33,6 @@ class _UserSettings extends State<UserSettings> {
               debugPrint('jey-dark-mode: $value');
             },
           ),
-        ]));
+        ]));*/
   }
 }

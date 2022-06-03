@@ -36,6 +36,10 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     _passwordSettings[PasswordTextField.UPPERCASE_CHARACTERS_KEY] = true;
     _passwordSettings[PasswordTextField.SPECIAL_CHARACTERS_KEY] = true;
     _passwordSettings[PasswordTextField.NUMBERS_KEY] = true;
+
+    if (widget.passwordController.text.isNotEmpty) {
+      _updateCurrentPasswordStrenght(widget.passwordController.text);
+    }
     super.initState();
   }
 
