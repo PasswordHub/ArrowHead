@@ -22,6 +22,7 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
   final Map<String, dynamic> _formData = {};
   final TextEditingController _passwordController = TextEditingController();
   bool updatePassword = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -36,6 +37,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
   /// Save the created/edited Password and add to the
   /// Password Provider
   void _savePassword(BuildContext context) {
+    setState(() {
+      isLoading = true;
+    });
     if (!(_formKey.currentState?.validate() ?? false)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -46,18 +50,79 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
-      return;
-    }
-
-    _formKey.currentState?.save();
-    _formData[Password.PASSWORD_KEY] = _passwordController.text;
-
-    if (updatePassword) {
-      Provider.of<PasswordProvider>(context, listen: false).update(_formData);
+      setState(() {
+        isLoading = false;
+      });
     } else {
-      Provider.of<PasswordProvider>(context, listen: false).add(_formData);
+      _formKey.currentState?.save();
+      _formData[Password.PASSWORD_KEY] = _passwordController.text;
+
+      if (updatePassword) {
+        Provider.of<PasswordProvider>(context, listen: false)
+            .update(_formData)
+            .then((value) => {
+                  setState(() {
+                    isLoading = false;
+                  }),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Senha alterada com sucesso!',
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  ),
+                  Navigator.of(context).pop()
+                })
+            .catchError((error) => {
+                  setState(() {
+                    isLoading = false;
+                  }),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Erro ao alterar senha.\n' + error.toString(),
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  )
+                });
+      } else {
+        Provider.of<PasswordProvider>(context, listen: false)
+            .add(_formData)
+            .then((value) => {
+                  setState(() {
+                    isLoading = false;
+                  }),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Senha criada com sucesso!',
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  ),
+                  Navigator.of(context).pop()
+                })
+            .catchError((error) => {
+                  setState(() {
+                    isLoading = false;
+                  }),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Erro ao criar senha.\n' + error.toString(),
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 13, 189, 62),
+                    ),
+                  )
+                });
+      }
     }
-    Navigator.of(context).pop();
   }
 
   @override
@@ -66,12 +131,29 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
       width: double.infinity,
       height: 40,
       child: ElevatedButton(
-          onPressed: () => _savePassword(context),
-          style: ElevatedButton.styleFrom(
-            primary: const Color.fromARGB(255, 13, 189, 62),
-          ),
-          child: Text('Criar senha',
-              style: Theme.of(context).textTheme.bodyText2)),
+        onPressed: () => _savePassword(context),
+        style: ElevatedButton.styleFrom(
+          primary: const Color.fromARGB(255, 13, 189, 62),
+        ),
+        child: !isLoading
+            ? Text(
+                'Criar senha',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              )
+            : const SizedBox(
+                width: 23,
+                height: 23,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Colors.white,
+                  strokeWidth: 3,
+                ),
+              ),
+      ),
     );
 
     return Scaffold(
@@ -79,9 +161,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
         iconTheme: const IconThemeData(
           color: Colors.white, //change your color here
         ),
-        title: Text(
+        title: const Text(
           'Criar senha',
-          style: Theme.of(context).textTheme.headline1,
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: SingleChildScrollView(
@@ -110,6 +192,9 @@ class _CreateEditPasswordState extends State<CreateEditPassword> {
                 passwordController: _passwordController,
                 onSaved: _onSavePassword,
                 passwordChange: _onSavePassword,
+              ),
+              const SizedBox(
+                height: 20,
               ),
               savePasswordButton
             ]),
